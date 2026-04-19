@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blossom Breweries: Brewed with Nature. Bottled with Soul.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,500;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <style>
+    /* ── CUSTOM PROPERTIES ─────────────────────────────── */
+    :root {
+      --bg:          #1a1209;
+      --bg-mid:      #221810;
+      --bg-light:    #2a1e12;
+      --bg-amber:    #1c1408;
+      --cream:       #f5ead0;
+      --cream-dim:   #b8a88a;
+      --rose:        #c9748a;
+      --rose-dark:   #a85970;
+      --rose-light:  #e8a0b0;
+      --gold:        #b8924a;
+      --gold-light:  #d4aa6a;
+
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans:  'DM Sans', system-ui, sans-serif;
+
+      --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    /* ── RESET ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: var(--sans);
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    img, svg { display: block; max-width: 100%; }
+
+    /* ── SCROLL ANIMATIONS ─────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out);
+    }
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-44px);
+      transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out);
+    }
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(44px);
+      transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out);
+    }
+    .reveal.in, .reveal-left.in, .reveal-right.in {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ── GRAIN TEXTURE ─────────────────────────────────── */
+    .grain::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* ── NAVIGATION ────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 900;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 110px;
+      padding: 0.5rem 4rem;
+      transition: min-height 0.4s ease, padding 0.4s ease, background 0.4s ease, border-color 0.4s ease;
+      border-bottom: 1px solid transparent;
+    }
+    .nav.scrolled {
+      background: rgba(22, 14, 7, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      min-height: 80px;
+      padding: 0.5rem 4rem;
+      border-color: rgba(201,116,138,.12);
+    }
+
+    .nav-logo { line-height: 1; }
+    .nav-logo-main {
+      font-family: var(--serif);
+      font-size: 1.45rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+    }
+    .nav-logo-sub {
+      font-size: .58rem;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-top: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      align-items: center;
+    }
+    .nav-links a {
+      font-size: .72rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--cream-dim);
+      position: relative;
+      transition: color .3s;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0;
+      width: 0; height: 1px;
+      background: var(--rose);
+      transition: width .3s;
+    }
+    .nav-links a:hover { color: var(--cream); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+      z-index: 1100;
+    }
+    .hamburger span {
+      display: block;
+      width: 22px; height: 1.5px;
+      background: var(--cream);
+      transition: all .3s ease;
+      transform-origin: center;
+    }
+    .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(4.5px,4.5px); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(4.5px,-4.5px); }
+
+    /* mobile overlay */
+    .mob-menu {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 2.5rem;
+      transform: translateX(100%);
+      transition: transform .5s cubic-bezier(.77,0,.18,1);
+    }
+    .mob-menu.open { transform: none; }
+    .mob-menu a {
+      font-family: var(--serif);
+      font-size: 2.2rem;
+      font-weight: 500;
+      color: var(--cream);
+      transition: color .25s;
+    }
+    .mob-menu a:hover { color: var(--rose); }
+
+    /* ── HERO ──────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+      background: radial-gradient(ellipse 90% 70% at 50% 55%, #3d2614 0%, #1a1209 58%, #090603 100%);
+    }
+
+    /* animated grain */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: -10%;
+      width: 120%; height: 120%;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+      animation: grain-drift 9s steps(12) infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+    @keyframes grain-drift {
+      0%   { transform: translate(0,0); }
+      11%  { transform: translate(-2%,-3%); }
+      22%  { transform: translate(3%,2%); }
+      33%  { transform: translate(-1%,4%); }
+      44%  { transform: translate(2%,-2%); }
+      55%  { transform: translate(-3%,1%); }
+      66%  { transform: translate(1%,-4%); }
+      77%  { transform: translate(-2%,3%); }
+      88%  { transform: translate(3%,-1%); }
+    }
+
+    .hero-body {
+      position: relative;
+      z-index: 3;
+      padding: 0 1.5rem;
+    }
+
+    .hero-eyebrow {
+      font-size: .68rem;
+      letter-spacing: .38em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp .8s var(--ease-out) .4s forwards;
+    }
+
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(3.2rem, 9.5vw, 9.5rem);
+      font-weight: 700;
+      line-height: .93;
+      letter-spacing: -.01em;
+      margin-bottom: 2.8rem;
+    }
+    .hero-title .line { display: block; overflow: hidden; }
+    .hero-title .line-inner {
+      display: block;
+      opacity: 0;
+      transform: translateY(105%);
+      animation: lineUp .95s var(--ease-out) forwards;
+    }
+    .hero-title .line:nth-child(1) .line-inner { animation-delay: .55s; }
+    .hero-title .line:nth-child(2) .line-inner {
+      animation-delay: .78s;
+      color: var(--rose);
+      font-style: italic;
+    }
+
+    .hero-sub {
+      font-size: .88rem;
+      letter-spacing: .2em;
+      color: var(--cream-dim);
+      font-weight: 300;
+      opacity: 0;
+      animation: fadeUp .8s var(--ease-out) 1.1s forwards;
+    }
+
+    @keyframes lineUp {
+      to { opacity: 1; transform: none; }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .hero-vert {
+      position: absolute;
+      right: 3rem;
+      top: 50%;
+      transform: translateY(-50%) rotate(90deg);
+      transform-origin: center;
+      font-size: .58rem;
+      letter-spacing: .32em;
+      text-transform: uppercase;
+      color: rgba(201,116,138,.4);
+      white-space: nowrap;
+      z-index: 3;
+      opacity: 0;
+      animation: fadeUp .8s var(--ease-out) 1.4s forwards;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .7rem;
+      opacity: 0;
+      animation: fadeUp .8s var(--ease-out) 1.5s forwards;
+    }
+    .hero-scroll span {
+      font-size: .58rem;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      color: var(--cream-dim);
+    }
+    .scroll-line {
+      width: 1px; height: 44px;
+      background: linear-gradient(to bottom, transparent, var(--rose));
+      animation: pulse-line 2.2s ease-in-out infinite;
+    }
+    @keyframes pulse-line {
+      0%,100% { transform: scaleY(1); opacity: .55; }
+      50%      { transform: scaleY(1.35); opacity: 1; }
+    }
+
+    /* ── SHARED SECTION STYLES ─────────────────────────── */
+    section { padding: 9rem 4rem; }
+    .container { max-width: 1240px; margin: 0 auto; }
+
+    .label {
+      font-size: .62rem;
+      letter-spacing: .36em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: .9rem;
+    }
+    .heading {
+      font-family: var(--serif);
+      font-size: clamp(2.4rem, 5vw, 4.5rem);
+      font-weight: 700;
+      line-height: 1.04;
+      color: var(--cream);
+    }
+
+    /* ── BEERS ─────────────────────────────────────────── */
+    #beers { background: var(--bg); }
+
+    .beers-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 4rem;
+      gap: 2rem;
+    }
+    .beers-header p {
+      font-size: .85rem;
+      color: var(--cream-dim);
+      max-width: 270px;
+      text-align: right;
+      line-height: 1.75;
+    }
+
+    .beers-grid {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 1.4rem;
+    }
+
+    .beer-card {
+      background: linear-gradient(160deg,#231911,#1c1409);
+      border: 1px solid rgba(201,116,138,.1);
+      border-radius: 2px;
+      padding: 2.5rem 2rem 2rem;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform .4s var(--ease-out),
+                  box-shadow .4s var(--ease-out),
+                  border-color .4s var(--ease-out);
+    }
+    .beer-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(130deg,rgba(201,116,138,.05),transparent 55%);
+      opacity: 0;
+      transition: opacity .4s;
+    }
+    .beer-card:hover {
+      transform: translateY(-9px);
+      box-shadow: 0 28px 64px rgba(0,0,0,.55);
+      border-color: rgba(201,116,138,.38);
+    }
+    .beer-card:hover::before { opacity: 1; }
+
+    .beer-illo {
+      width: 76px; height: 76px;
+      margin: 0 auto 1.6rem;
+      color: var(--rose);
+    }
+    .beer-name {
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: .7rem;
+      color: var(--cream);
+    }
+    .beer-desc {
+      font-size: .83rem;
+      color: var(--cream-dim);
+      line-height: 1.65;
+      margin-bottom: 1.6rem;
+    }
+    .beer-abv {
+      font-size: .62rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--rose);
+      border: 1px solid rgba(201,116,138,.32);
+      padding: .28rem .8rem;
+      border-radius: 100px;
+    }
+
+    /* ── STORY ─────────────────────────────────────────── */
+    #story { background: var(--bg-mid); }
+
+    .story-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7rem;
+      align-items: center;
+    }
+
+    .story-quote {
+      font-family: var(--serif);
+      font-size: clamp(1.7rem, 2.8vw, 2.6rem);
+      font-style: italic;
+      font-weight: 400;
+      line-height: 1.35;
+      color: var(--cream);
+      padding-left: 2rem;
+      border-left: 2px solid var(--rose);
+    }
+
+    .story-sprig { margin: 2.5rem 0; color: rgba(201,116,138,.5); }
+
+    .story-text { font-size: .93rem; color: var(--cream-dim); line-height: 1.9; }
+    .story-text p + p { margin-top: 1.2rem; }
+
+    /* ── PROCESS ───────────────────────────────────────── */
+    #process { background: var(--bg); }
+
+    .process-header { margin-bottom: 5rem; }
+
+    .process-track {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      position: relative;
+      gap: 2rem;
+    }
+    /* connecting line */
+    .process-track::before {
+      content: '';
+      position: absolute;
+      top: 3.2rem;
+      left: calc(12.5% - 4px);
+      right: calc(12.5% - 4px);
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(201,116,138,.22) 15%, rgba(201,116,138,.22) 85%, transparent);
+    }
+
+    .step { position: relative; }
+    .step-dot {
+      position: absolute;
+      top: 2.9rem; left: 0;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--rose);
+      border: 2px solid var(--bg);
+      box-shadow: 0 0 0 3px rgba(201,116,138,.18);
+    }
+
+    .step-num {
+      font-family: var(--serif);
+      font-size: 5.5rem;
+      font-weight: 700;
+      line-height: 1;
+      color: rgba(201,116,138,.1);
+      margin-bottom: .8rem;
+      position: relative;
+    }
+    .step-num::after {
+      content: attr(data-n);
+      position: absolute;
+      top: 1.4rem; left: 0;
+      font-family: var(--sans);
+      font-size: .6rem;
+      letter-spacing: .22em;
+      color: var(--rose);
+      font-weight: 400;
+    }
+    .step-title {
+      font-family: var(--serif);
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin-bottom: .7rem;
+      color: var(--cream);
+    }
+    .step-desc {
+      font-size: .83rem;
+      color: var(--cream-dim);
+      line-height: 1.75;
+    }
+
+    /* ── TAPROOM ───────────────────────────────────────── */
+    #taproom {
+      background: linear-gradient(135deg, #221508 0%, #1a1209 45%, #0d0905 100%);
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+    #taproom::before {
+      content: '';
+      position: absolute;
+      top: -40%; left: 50%;
+      transform: translateX(-50%);
+      width: 75%; height: 200%;
+      background: radial-gradient(ellipse at center, rgba(184,146,74,.055) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .taproom-body { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; }
+
+    .taproom-h {
+      font-family: var(--serif);
+      font-size: clamp(2.6rem, 6.5vw, 5.5rem);
+      font-weight: 700;
+      line-height: .97;
+      margin: 1rem 0 1.6rem;
+    }
+
+    .taproom-loc {
+      font-size: .78rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 3.5rem;
+    }
+
+    .hours {
+      display: flex;
+      justify-content: center;
+      gap: 4rem;
+      margin-bottom: 3.5rem;
+    }
+    .hours-item {}
+    .hours-day {
+      font-size: .62rem;
+      letter-spacing: .24em;
+      text-transform: uppercase;
+      color: var(--cream-dim);
+      margin-bottom: .45rem;
+    }
+    .hours-time {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      color: var(--cream);
+    }
+
+    .btn {
+      display: inline-block;
+      background: var(--rose);
+      color: var(--bg);
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      padding: 1rem 2.8rem;
+      border-radius: 100px;
+      transition: background .3s, transform .3s, box-shadow .3s;
+    }
+    .btn:hover {
+      background: var(--rose-light);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(201,116,138,.28);
+    }
+
+    /* ── SEASONAL ──────────────────────────────────────── */
+    #seasonal { background: var(--bg-mid); }
+
+    .seasonal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7rem;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .62rem;
+      letter-spacing: .24em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid rgba(184,146,74,.38);
+      padding: .35rem 1rem;
+      border-radius: 100px;
+      margin-bottom: 1.6rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .badge::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -120%;
+      width: 60%; height: 100%;
+      background: linear-gradient(90deg,transparent,rgba(255,255,255,.14),transparent);
+      animation: shimmer 2.8s ease-in-out infinite;
+    }
+    @keyframes shimmer { to { left: 220%; } }
+
+    .seasonal-name {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      font-weight: 700;
+      line-height: 1.08;
+      margin-bottom: 1.5rem;
+    }
+    .seasonal-desc {
+      font-size: .93rem;
+      color: var(--cream-dim);
+      line-height: 1.88;
+      margin-bottom: 1.1rem;
+    }
+    .seasonal-meta {
+      display: flex;
+      gap: 2.5rem;
+      margin-top: 2rem;
+    }
+    .meta-item {}
+    .meta-lbl {
+      font-size: .6rem;
+      letter-spacing: .24em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: .2rem;
+    }
+    .meta-val {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+    }
+
+    .seasonal-illo {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--rose);
+    }
+
+    /* ── STOCKISTS ─────────────────────────────────────── */
+    #stockists { background: var(--bg); text-align: center; }
+    .stockists-body { max-width: 820px; margin: 0 auto; }
+    .stockists-sub {
+      font-size: .9rem;
+      color: var(--cream-dim);
+      max-width: 460px;
+      margin: 1.2rem auto 0;
+      line-height: 1.8;
+    }
+
+    .regions {
+      display: flex;
+      margin-top: 5rem;
+      border-top: 1px solid rgba(201,116,138,.13);
+      border-bottom: 1px solid rgba(201,116,138,.13);
+    }
+    .region {
+      flex: 1;
+      padding: 3rem 2rem;
+      border-right: 1px solid rgba(201,116,138,.13);
+      transition: background .35s;
+    }
+    .region:last-child { border-right: none; }
+    .region:hover { background: rgba(201,116,138,.04); }
+    .region-name {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: .45rem;
+    }
+    .region-detail { font-size: .75rem; color: var(--cream-dim); letter-spacing: .08em; }
+
+    /* ── FOOTER ────────────────────────────────────────── */
+    footer {
+      background: #0c0906;
+      padding: 6rem 4rem 2rem;
+      border-top: 1px solid rgba(201,116,138,.09);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 4rem;
+      padding-bottom: 4.5rem;
+      border-bottom: 1px solid rgba(245,234,208,.07);
+    }
+
+    .flogo-main {
+      font-family: var(--serif);
+      font-size: 1.7rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+    }
+    .flogo-sub {
+      font-size: .6rem;
+      letter-spacing: .26em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-top: 3px;
+    }
+    .ftagline {
+      margin-top: 1.6rem;
+      font-size: .83rem;
+      color: var(--cream-dim);
+      font-style: italic;
+      line-height: 1.75;
+    }
+
+    .fcol-head {
+      font-size: .6rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 1.5rem;
+    }
+    .fcol-links { display: flex; flex-direction: column; gap: .85rem; }
+    .fcol-links a { font-size: .84rem; color: var(--cream-dim); transition: color .25s; }
+    .fcol-links a:hover { color: var(--cream); }
+
+    .socials { display: flex; gap: .9rem; margin-top: .4rem; }
+    .socials a {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(245,234,208,.14);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--cream-dim);
+      transition: border-color .3s, color .3s, background .3s;
+    }
+    .socials a:hover {
+      border-color: var(--rose);
+      color: var(--rose);
+      background: rgba(201,116,138,.08);
+    }
+
+    .faddress { margin-top: 1.6rem; font-size: .8rem; color: var(--cream-dim); line-height: 1.8; }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 2rem;
+    }
+    .fcopy { font-size: .73rem; color: rgba(245,234,208,.28); letter-spacing: .07em; }
+    .flegal { display: flex; gap: 2rem; }
+    .flegal a { font-size: .73rem; color: rgba(245,234,208,.28); transition: color .25s; }
+    .flegal a:hover { color: var(--cream-dim); }
+
+    /* ── NAV LOGO IMAGE ───────────────────────────────── */
+    .nav-logo img {
+      max-height: 100px;
+      width: auto;
+      display: block;
+      transition: opacity .3s;
+    }
+    .nav-logo img:hover { opacity: .85; }
+
+    /* ── JAPANESE RANGE SECTION ────────────────────────── */
+    #japanese-range { background: var(--bg-mid); }
+
+    .jp-header { margin-bottom: 4rem; }
+
+    .jp-title-kanji {
+      font-family: var(--serif);
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1;
+      color: var(--cream);
+      letter-spacing: .04em;
+    }
+    .jp-title-sub {
+      font-family: var(--sans);
+      font-size: .72rem;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-top: .8rem;
+    }
+    .jp-intro {
+      font-size: .9rem;
+      color: var(--cream-dim);
+      max-width: 480px;
+      line-height: 1.8;
+      margin-top: 1rem;
+    }
+
+    .jp-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.4rem;
+    }
+
+    .jp-card {
+      background: linear-gradient(160deg, #231911, #1c1409);
+      border: 1px solid rgba(201,116,138,.1);
+      border-top: 2px solid var(--rose);
+      border-radius: 2px;
+      padding: 2rem 1.8rem 1.8rem;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform .4s var(--ease-out),
+                  box-shadow .4s var(--ease-out),
+                  border-color .4s var(--ease-out);
+    }
+    .jp-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(130deg, rgba(201,116,138,.05), transparent 55%);
+      opacity: 0;
+      transition: opacity .4s;
+    }
+    .jp-card:hover {
+      transform: translateY(-9px);
+      box-shadow: 0 28px 64px rgba(0,0,0,.55);
+      border-color: rgba(201,116,138,.45);
+    }
+    .jp-card:hover::before { opacity: 1; }
+
+    .jp-card-top {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1.4rem;
+    }
+
+    .kanji-seal {
+      width: 36px; height: 36px;
+      flex-shrink: 0;
+    }
+
+    /* ── RESPONSIVE ────────────────────────────────────── */
+    @media (max-width: 1100px) {
+      .beers-grid { grid-template-columns: repeat(2,1fr); }
+      .jp-grid { grid-template-columns: repeat(2,1fr); }
+      .process-track { grid-template-columns: repeat(2,1fr); }
+      .process-track::before { display: none; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 3rem; }
+    }
+
+    @media (max-width: 820px) {
+      section { padding: 6rem 2rem; }
+      .nav { padding: 1.3rem 2rem; }
+      .nav.scrolled { padding: .9rem 2rem; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .hero-vert { display: none; }
+
+      .beers-header { flex-direction: column; align-items: flex-start; }
+      .beers-header p { text-align: left; max-width: 100%; }
+      .beers-grid { grid-template-columns: 1fr; max-width: 380px; }
+      .jp-grid { grid-template-columns: 1fr; max-width: 380px; }
+
+      .story-grid { grid-template-columns: 1fr; gap: 3.5rem; }
+      .process-track { grid-template-columns: 1fr; gap: 3.5rem; }
+
+      .hours { flex-direction: column; gap: 2rem; }
+      .seasonal-grid { grid-template-columns: 1fr; gap: 3.5rem; }
+      .seasonal-illo { display: none; }
+
+      .regions { flex-direction: column; }
+      .region { border-right: none; border-bottom: 1px solid rgba(201,116,138,.13); }
+      .region:last-child { border-bottom: none; }
+
+      .footer-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      footer { padding: 4rem 2rem 2rem; }
+      .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
+      .flegal { justify-content: center; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-title { font-size: clamp(2.6rem,13vw,4rem); }
+      .seasonal-meta { flex-wrap: wrap; gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     NAVIGATION
+════════════════════════════════════════════════════════ -->
+<nav class="nav" id="nav">
+  <a href="#" class="nav-logo">
+    <img src="Blossomlogo.png" alt="Blossom Breweries">
+  </a>
+  <ul class="nav-links">
+    <li><a href="#beers">Our Beers</a></li>
+    <li><a href="#japanese-range">Japanese Range</a></li>
+    <li><a href="#story">Our Story</a></li>
+    <li><a href="#taproom">Taproom</a></li>
+    <li><a href="#seasonal">Seasonal</a></li>
+    <li><a href="#stockists">Visit Us</a></li>
+    <li><a href="menu.html">Menu</a></li>
+    <li><a href="order.html">Order</a></li>
+  </ul>
+  <button class="hamburger" id="ham" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mob-menu" id="mob">
+  <a href="#beers"           class="mlink">Our Beers</a>
+  <a href="#japanese-range"  class="mlink">Japanese Range</a>
+  <a href="#story"           class="mlink">Our Story</a>
+  <a href="#taproom"         class="mlink">Taproom</a>
+  <a href="#seasonal"        class="mlink">Seasonal</a>
+  <a href="#stockists"       class="mlink">Visit Us</a>
+  <a href="menu.html"        class="mlink">Menu</a>
+  <a href="order.html"       class="mlink">Order</a>
+</div>
+
+<main>
+
+<!-- ═══════════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════════════ -->
+<section class="hero" id="hero">
+  <div class="hero-body">
+    <p class="hero-eyebrow">San Andreas · Los Santos · Est. 2025</p>
+    <h1 class="hero-title">
+      <span class="line"><span class="line-inner">Brewed with Nature.</span></span>
+      <span class="line"><span class="line-inner">Bottled with Soul.</span></span>
+    </h1>
+    <p class="hero-sub">Small-batch ales, lagers, ciders &amp; Japanese spirits from Los Santos, San Andreas</p>
+  </div>
+  <div class="hero-vert">Blossom Breweries &nbsp;·&nbsp; Los Santos, San Andreas &nbsp;·&nbsp; Est. 2025</div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     BEERS
+════════════════════════════════════════════════════════ -->
+<section id="beers">
+  <div class="container">
+    <div class="beers-header">
+      <div>
+        <p class="label reveal">The Range</p>
+        <h2 class="heading reveal">Four expressions.<br>One craft.</h2>
+      </div>
+      <p class="reveal">Each beer we brew tells a story of land, season, and patience. These are our year-round expressions, the ones that started everything.</p>
+    </div>
+    <div class="beers-grid">
+
+      <!-- Harvest Gold Ale -->
+      <article class="beer-card reveal">
+        <div class="beer-illo">
+          <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- stem -->
+            <path d="M38 68 L38 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            <!-- grain heads left -->
+            <path d="M38 44 C30 38 26 30 28 21" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+            <path d="M38 37 C31 33 28 25 30 17" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+            <path d="M38 51 C29 46 25 37 27 28" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+            <!-- grain heads right -->
+            <path d="M38 44 C46 38 50 30 48 21" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+            <path d="M38 37 C45 33 48 25 46 17" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+            <path d="M38 51 C47 46 51 37 49 28" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+            <!-- ellipse grain kernels -->
+            <ellipse cx="28.5" cy="20" rx="3.2" ry="5" stroke="currentColor" stroke-width="1" transform="rotate(-18 28.5 20)"/>
+            <ellipse cx="30" cy="16" rx="2.8" ry="4.5" stroke="currentColor" stroke-width="1" transform="rotate(-12 30 16)"/>
+            <ellipse cx="26.5" cy="27" rx="3.2" ry="5" stroke="currentColor" stroke-width="1" transform="rotate(-22 26.5 27)"/>
+            <ellipse cx="47.5" cy="20" rx="3.2" ry="5" stroke="currentColor" stroke-width="1" transform="rotate(18 47.5 20)"/>
+            <ellipse cx="46" cy="16" rx="2.8" ry="4.5" stroke="currentColor" stroke-width="1" transform="rotate(12 46 16)"/>
+            <ellipse cx="49.5" cy="27" rx="3.2" ry="5" stroke="currentColor" stroke-width="1" transform="rotate(22 49.5 27)"/>
+            <ellipse cx="38" cy="13.5" rx="2.8" ry="4.5" stroke="currentColor" stroke-width="1"/>
+            <!-- base leaves -->
+            <path d="M38 58 C34 55 31 58 34 62" stroke="currentColor" stroke-width="1" stroke-linecap="round" fill="none"/>
+            <path d="M38 58 C42 55 45 58 42 62" stroke="currentColor" stroke-width="1" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
+        <h3 class="beer-name">Harvest Gold Ale</h3>
+        <p class="beer-desc">A golden ale kissed by wildflower honey, brewed with San Andreas barley and whole-flower hops. Soft, floral, and warmly satisfying in every glass.</p>
+        <span class="beer-abv">ABV 4.2%</span>
+      </article>
+
+      <!-- Midnight Porter -->
+      <article class="beer-card reveal" style="transition-delay:.1s">
+        <div class="beer-illo">
+          <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- oak branch stem -->
+            <path d="M38 68 L38 38" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            <!-- oak leaf shape -->
+            <path d="M38 40 C33 37 24 32 22 25 C20 18 25 13 30 15 C29 9 33 6 37 10 C36 4 41 2 43 7 C47 2 52 5 50 11 C54 10 57 15 54 21 C51 27 45 31 38 32 Z"
+                  stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- leaf veins -->
+            <path d="M38 32 L34 26" stroke="currentColor" stroke-width=".7" stroke-linecap="round" opacity=".65"/>
+            <path d="M38 32 L42 26" stroke="currentColor" stroke-width=".7" stroke-linecap="round" opacity=".65"/>
+            <path d="M35 27 L30 22" stroke="currentColor" stroke-width=".7" stroke-linecap="round" opacity=".65"/>
+            <path d="M41 27 L46 22" stroke="currentColor" stroke-width=".7" stroke-linecap="round" opacity=".65"/>
+            <path d="M32 23 L27 18" stroke="currentColor" stroke-width=".7" stroke-linecap="round" opacity=".55"/>
+            <path d="M44 23 L49 18" stroke="currentColor" stroke-width=".7" stroke-linecap="round" opacity=".55"/>
+            <!-- acorn -->
+            <ellipse cx="38" cy="57" rx="3.2" ry="4.2" stroke="currentColor" stroke-width="1"/>
+            <path d="M35 54 Q38 51 41 54" stroke="currentColor" stroke-width="1" stroke-linecap="round" fill="none"/>
+            <path d="M38 52.5 L38 49" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3 class="beer-name">Midnight Porter</h3>
+        <p class="beer-desc">Dark as a winter field, rich as oak smoke. Notes of roasted coffee, dark chocolate, and a lingering warmth that settles like a well-kept fire.</p>
+        <span class="beer-abv">ABV 5.8%</span>
+      </article>
+
+      <!-- Meadow Lager -->
+      <article class="beer-card reveal" style="transition-delay:.2s">
+        <div class="beer-illo">
+          <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- curling vine -->
+            <path d="M38 70 C38 62 36 55 34 47 C32 39 30 31 32 23 C34 16 38 11 40 13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            <!-- left hop vine -->
+            <path d="M34 47 C27 44 23 37 25 30 C27 24 32 24 33 28" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+            <!-- left hop cone -->
+            <ellipse cx="26" cy="36" rx="4" ry="6.5" stroke="currentColor" stroke-width="1" transform="rotate(-12 26 36)"/>
+            <path d="M23.5 31 L28.5 41" stroke="currentColor" stroke-width=".7" stroke-linecap="round" opacity=".6"/>
+            <path d="M21.5 36 L30.5 38" stroke="currentColor" stroke-width=".7" stroke-linecap="round" opacity=".6"/>
+            <!-- right hop vine -->
+            <path d="M34 31 C40 27 46 21 44 15 C42 10 38 10 38 14" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+            <!-- right hop cone -->
+            <ellipse cx="44" cy="18.5" rx="4" ry="6.5" stroke="currentColor" stroke-width="1" transform="rotate(12 44 18.5)"/>
+            <path d="M41.5 14 L46.5 23" stroke="currentColor" stroke-width=".7" stroke-linecap="round" opacity=".6"/>
+            <path d="M40 18.5 L49 19.5" stroke="currentColor" stroke-width=".7" stroke-linecap="round" opacity=".6"/>
+            <!-- leaves -->
+            <path d="M34 39 C30 35 30 30 34 30" stroke="currentColor" stroke-width=".9" stroke-linecap="round" fill="none"/>
+            <path d="M36 23 C32 19 33 14 36 14" stroke="currentColor" stroke-width=".9" stroke-linecap="round" fill="none"/>
+            <!-- tendrils -->
+            <path d="M38 58 C41 56 43 52 41 50" stroke="currentColor" stroke-width=".8" stroke-linecap="round"/>
+            <path d="M36 42 C39 40 41 36 39 34" stroke="currentColor" stroke-width=".8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3 class="beer-name">Meadow Lager</h3>
+        <p class="beer-desc">Crisp, light, and effortlessly refreshing. Brewed slow with noble hops and cold-conditioned until every sip tastes exactly like summer should.</p>
+        <span class="beer-abv">ABV 3.8%</span>
+      </article>
+
+      <!-- Blossom Rose Cider -->
+      <article class="beer-card reveal" style="transition-delay:.3s">
+        <div class="beer-illo">
+          <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- branch -->
+            <path d="M18 68 C23 60 28 51 34 45 C38 41 42 37 42 29" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            <!-- sub-branch -->
+            <path d="M34 45 C30 39 28 32 30 26" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+            <!-- large blossom: 5 petals radiating from center ~(44,22) -->
+            <ellipse cx="44" cy="15" rx="5" ry="7.5" stroke="currentColor" stroke-width="1" transform="rotate(15 44 15)" fill="none"/>
+            <ellipse cx="51.5" cy="20" rx="5" ry="7.5" stroke="currentColor" stroke-width="1" transform="rotate(57 51.5 20)" fill="none"/>
+            <ellipse cx="51" cy="29" rx="5" ry="7.5" stroke="currentColor" stroke-width="1" transform="rotate(99 51 29)" fill="none"/>
+            <ellipse cx="43" cy="33" rx="5" ry="7.5" stroke="currentColor" stroke-width="1" transform="rotate(141 43 33)" fill="none"/>
+            <ellipse cx="37.5" cy="26" rx="5" ry="7.5" stroke="currentColor" stroke-width="1" transform="rotate(183 37.5 26)" fill="none"/>
+            <!-- center -->
+            <circle cx="44.5" cy="24" r="2.8" stroke="currentColor" stroke-width=".9" fill="none"/>
+            <circle cx="44" cy="23.5" r=".8" fill="currentColor"/>
+            <circle cx="45.5" cy="24.5" r=".8" fill="currentColor"/>
+            <circle cx="44.5" cy="22" r=".8" fill="currentColor"/>
+            <!-- small blossom -->
+            <ellipse cx="29" cy="25" rx="3.5" ry="5" stroke="currentColor" stroke-width=".9" transform="rotate(8 29 25)" fill="none"/>
+            <ellipse cx="34" cy="27" rx="3.5" ry="5" stroke="currentColor" stroke-width=".9" transform="rotate(50 34 27)" fill="none"/>
+            <ellipse cx="34.5" cy="33.5" rx="3.5" ry="5" stroke="currentColor" stroke-width=".9" transform="rotate(92 34.5 33.5)" fill="none"/>
+            <ellipse cx="28" cy="34" rx="3.5" ry="5" stroke="currentColor" stroke-width=".9" transform="rotate(134 28 34)" fill="none"/>
+            <circle cx="30.5" cy="30" r="2" stroke="currentColor" stroke-width=".9" fill="none"/>
+            <!-- leaves -->
+            <path d="M40 41 C37 37 36 31 38 29" stroke="currentColor" stroke-width=".9" stroke-linecap="round" fill="none"/>
+            <path d="M34 52 C38 48 40 42 38 40" stroke="currentColor" stroke-width=".9" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
+        <h3 class="beer-name">Blossom Rose Cider</h3>
+        <p class="beer-desc">Heritage apples, pressed by hand from our orchard in the hills above Los Santos. A blush-hued cider, delicate and fleeting as the first bloom of spring.</p>
+        <span class="beer-abv">ABV 4.5%</span>
+      </article>
+
+    </div><!-- /beers-grid -->
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     JAPANESE RANGE
+════════════════════════════════════════════════════════ -->
+<section id="japanese-range">
+  <div class="container">
+    <div class="jp-header">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;flex-wrap:wrap;">
+        <div>
+          <p class="label reveal">東洋の味</p>
+          <h2 class="jp-title-kanji reveal">Tastes of the East</h2>
+          <p class="jp-title-sub reveal">Japanese Spirits &amp; Brews</p>
+        </div>
+        <p class="jp-intro reveal">Where the craft of the West meets the precision of the East. Six expressions inspired by Japan, brewed and blended right here in Los Santos.</p>
+      </div>
+    </div>
+    <div class="jp-grid">
+
+      <!-- 1. Sakura Sake -->
+      <article class="jp-card reveal">
+        <div class="jp-card-top">
+          <!-- Kanji seal: 花 -->
+          <svg class="kanji-seal" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="1" width="34" height="34" rx="2" fill="none" stroke="#c9748a" stroke-width="1.5"/>
+            <rect x="3.5" y="3.5" width="29" height="29" rx="1" fill="none" stroke="#c9748a" stroke-width=".6" opacity=".5"/>
+            <text x="18" y="25" text-anchor="middle" font-family="serif" font-size="18" fill="#c9748a">花</text>
+          </svg>
+        </div>
+        <h3 class="beer-name">Sakura Sake</h3>
+        <p class="beer-desc">A delicate junmai sake, brewed with spring water and aged cherry blossom yeast. Floral, soft, and ceremonial.</p>
+        <span class="beer-abv">ABV 15.2%</span>
+      </article>
+
+      <!-- 2. Yuzu Lager -->
+      <article class="jp-card reveal" style="transition-delay:.1s">
+        <div class="jp-card-top">
+          <!-- Kanji seal: 茶 -->
+          <svg class="kanji-seal" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="1" width="34" height="34" rx="2" fill="none" stroke="#c9748a" stroke-width="1.5"/>
+            <rect x="3.5" y="3.5" width="29" height="29" rx="1" fill="none" stroke="#c9748a" stroke-width=".6" opacity=".5"/>
+            <text x="18" y="25" text-anchor="middle" font-family="serif" font-size="18" fill="#c9748a">茶</text>
+          </svg>
+        </div>
+        <h3 class="beer-name">Yuzu Lager</h3>
+        <p class="beer-desc">Light lager infused with fresh yuzu citrus peel. Bright, zesty, unmistakably Japanese.</p>
+        <span class="beer-abv">ABV 4.8%</span>
+      </article>
+
+      <!-- 3. Matcha Wit -->
+      <article class="jp-card reveal" style="transition-delay:.2s">
+        <div class="jp-card-top">
+          <!-- Kanji seal: 梅 -->
+          <svg class="kanji-seal" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="1" width="34" height="34" rx="2" fill="none" stroke="#c9748a" stroke-width="1.5"/>
+            <rect x="3.5" y="3.5" width="29" height="29" rx="1" fill="none" stroke="#c9748a" stroke-width=".6" opacity=".5"/>
+            <text x="18" y="25" text-anchor="middle" font-family="serif" font-size="18" fill="#c9748a">梅</text>
+          </svg>
+        </div>
+        <h3 class="beer-name">Matcha Wit</h3>
+        <p class="beer-desc">A Belgian-style witbier brewed with ceremonial-grade matcha. Earthy, creamy, and beautifully green.</p>
+        <span class="beer-abv">ABV 5.1%</span>
+      </article>
+
+      <!-- 4. Shiso Gin & Tonic -->
+      <article class="jp-card reveal" style="transition-delay:.05s">
+        <div class="jp-card-top">
+          <!-- Kanji seal: 柚 -->
+          <svg class="kanji-seal" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="1" width="34" height="34" rx="2" fill="none" stroke="#c9748a" stroke-width="1.5"/>
+            <rect x="3.5" y="3.5" width="29" height="29" rx="1" fill="none" stroke="#c9748a" stroke-width=".6" opacity=".5"/>
+            <text x="18" y="25" text-anchor="middle" font-family="serif" font-size="18" fill="#c9748a">柚</text>
+          </svg>
+        </div>
+        <h3 class="beer-name">Shiso Gin &amp; Tonic</h3>
+        <p class="beer-desc">House-crafted gin with Japanese shiso leaf and tonic. Ready to drink, impossibly refined.</p>
+        <span class="beer-abv">ABV 6.0% · Canned</span>
+      </article>
+
+      <!-- 5. Umeshu Plum Wine -->
+      <article class="jp-card reveal" style="transition-delay:.15s">
+        <div class="jp-card-top">
+          <!-- Kanji seal: 焼 -->
+          <svg class="kanji-seal" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="1" width="34" height="34" rx="2" fill="none" stroke="#c9748a" stroke-width="1.5"/>
+            <rect x="3.5" y="3.5" width="29" height="29" rx="1" fill="none" stroke="#c9748a" stroke-width=".6" opacity=".5"/>
+            <text x="18" y="25" text-anchor="middle" font-family="serif" font-size="18" fill="#c9748a">焼</text>
+          </svg>
+        </div>
+        <h3 class="beer-name">Umeshu Plum Wine</h3>
+        <p class="beer-desc">Traditional ume plum liqueur, slow-steeped for 6 months. Sweet, tart, and deeply Japanese.</p>
+        <span class="beer-abv">ABV 12.0%</span>
+      </article>
+
+      <!-- 6. Shochu Highball -->
+      <article class="jp-card reveal" style="transition-delay:.25s">
+        <div class="jp-card-top">
+          <!-- Kanji seal: 酒 -->
+          <svg class="kanji-seal" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="1" width="34" height="34" rx="2" fill="none" stroke="#c9748a" stroke-width="1.5"/>
+            <rect x="3.5" y="3.5" width="29" height="29" rx="1" fill="none" stroke="#c9748a" stroke-width=".6" opacity=".5"/>
+            <text x="18" y="25" text-anchor="middle" font-family="serif" font-size="18" fill="#c9748a">酒</text>
+          </svg>
+        </div>
+        <h3 class="beer-name">Shochu Highball</h3>
+        <p class="beer-desc">Barley shochu, sparkling water, and a whisper of lemon. The Tokyo classic, bottled in Los Santos.</p>
+        <span class="beer-abv">ABV 7.0% · Canned</span>
+      </article>
+
+    </div><!-- /jp-grid -->
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     STORY
+════════════════════════════════════════════════════════ -->
+<section id="story">
+  <div class="container">
+    <div class="story-grid">
+      <div class="reveal-left">
+        <blockquote class="story-quote">
+          "I didn't want to make beer. I wanted to make something that felt like coming home."
+        </blockquote>
+        <div class="story-sprig">
+          <svg width="130" height="28" viewBox="0 0 130 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="8" y1="14" x2="122" y2="14" stroke="currentColor" stroke-width=".8" stroke-dasharray="2.5 3.5"/>
+            <!-- sprig center -->
+            <path d="M58 14 C55 11 53 7 55 4" stroke="currentColor" stroke-width=".9" stroke-linecap="round"/>
+            <path d="M58 14 C53 12 51 8 53 5" stroke="currentColor" stroke-width=".9" stroke-linecap="round"/>
+            <path d="M72 14 C75 11 77 7 75 4" stroke="currentColor" stroke-width=".9" stroke-linecap="round"/>
+            <path d="M72 14 C77 12 79 8 77 5" stroke="currentColor" stroke-width=".9" stroke-linecap="round"/>
+            <line x1="65" y1="14" x2="65" y2="5" stroke="currentColor" stroke-width=".9" stroke-linecap="round"/>
+            <circle cx="65" cy="4" r="1.6" fill="currentColor"/>
+            <circle cx="58" cy="3.5" r="1.1" fill="currentColor"/>
+            <circle cx="72" cy="3.5" r="1.1" fill="currentColor"/>
+            <!-- tiny berries left -->
+            <circle cx="51" cy="6" r=".8" fill="currentColor" opacity=".6"/>
+            <circle cx="79" cy="6" r=".8" fill="currentColor" opacity=".6"/>
+          </svg>
+        </div>
+      </div>
+      <div class="reveal-right">
+        <p class="label">Our Story</p>
+        <h2 class="heading" style="font-size:clamp(2rem,3.5vw,3rem);margin-bottom:2rem;">A Dream Brewed<br>in Los Santos</h2>
+        <div class="story-text">
+          <p>Blossom Breweries was founded by Sakura Akiyama, a Japanese brewmaster who brought her craft to Los Santos with two suitcases, a notebook full of recipes, and an unshakeable belief that great beer and Japanese brewing tradition belonged in the same glass.</p>
+          <p>Sakura spent years in Japan studying the relationship between traditional brewing craft and modern flavour, convinced that the two worlds had more in common than most people realised. Blossom is the result of that conviction: a brewery where a cold Meadow Lager sits comfortably next to a ceremonial Sakura Sake, and where every pour tells a story about craft, patience, and culture.</p>
+          <p>Founded in 2025, Blossom Breweries operates out of Los Santos, San Andreas. Sakura runs every aspect of the brewery with the same philosophy she carried across the Pacific: if it isn't worth being proud of, it doesn't leave the tank.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     PROCESS
+════════════════════════════════════════════════════════ -->
+<section id="process">
+  <div class="container">
+    <div class="process-header reveal">
+      <p class="label">How We Brew</p>
+      <h2 class="heading">The old way.<br>The only way.</h2>
+    </div>
+    <div class="process-track">
+      <div class="step reveal">
+        <div class="step-dot"></div>
+        <div class="step-num" data-n="01">01</div>
+        <h3 class="step-title">Select</h3>
+        <p class="step-desc">We choose only the finest local barley, hand-selected hops from farms we've known for decades, and whole-flower botanicals sourced from the hillsides above Los Santos.</p>
+      </div>
+      <div class="step reveal" style="transition-delay:.15s">
+        <div class="step-dot"></div>
+        <div class="step-num" data-n="02">02</div>
+        <h3 class="step-title">Mash</h3>
+        <p class="step-desc">Slow-mashed in our original copper vessels over several hours, the grain releases its full depth. Patience, not pressure, is our method. It always has been.</p>
+      </div>
+      <div class="step reveal" style="transition-delay:.3s">
+        <div class="step-dot"></div>
+        <div class="step-num" data-n="03">03</div>
+        <h3 class="step-title">Ferment</h3>
+        <p class="step-desc">Open fermentation in our stone-floored conditioning room, using the same house yeast strain since 1991. It knows these walls. It knows this beer. We trust it completely.</p>
+      </div>
+      <div class="step reveal" style="transition-delay:.45s">
+        <div class="step-dot"></div>
+        <div class="step-num" data-n="04">04</div>
+        <h3 class="step-title">Condition</h3>
+        <p class="step-desc">Cold-conditioned for a minimum of three weeks, each batch rests until the beer itself signals readiness. Not until a deadline has passed, but until it is truly finished.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     TAPROOM
+════════════════════════════════════════════════════════ -->
+<section id="taproom">
+  <div class="taproom-body">
+    <p class="label reveal" style="display:block;text-align:center;">Come &amp; Find Us</p>
+    <h2 class="taproom-h reveal">Visit the<br><em style="color:var(--rose)">Taproom</em></h2>
+    <p class="taproom-loc reveal">Open Thursday–Sunday &nbsp;·&nbsp; The Blossom House, Rockford Hills, Los Santos</p>
+    <div class="hours reveal">
+      <div class="hours-item">
+        <p class="hours-day">Thursday &amp; Friday</p>
+        <p class="hours-time">4pm to 10pm</p>
+      </div>
+      <div class="hours-item">
+        <p class="hours-day">Saturday</p>
+        <p class="hours-time">12pm to 11pm</p>
+      </div>
+      <div class="hours-item">
+        <p class="hours-day">Sunday</p>
+        <p class="hours-time">12pm to 8pm</p>
+      </div>
+    </div>
+    <a href="#" class="btn reveal">Get Directions</a>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SEASONAL
+════════════════════════════════════════════════════════ -->
+<section id="seasonal">
+  <div class="container">
+    <div class="seasonal-grid">
+      <div class="reveal-left">
+        <div class="badge">
+          <svg width="7" height="7" viewBox="0 0 7 7" fill="currentColor"><circle cx="3.5" cy="3.5" r="3.5"/></svg>
+          Limited Edition · Spring 2026
+        </div>
+        <h2 class="seasonal-name">Sakura Season<br>Sake</h2>
+        <p class="seasonal-desc">Our annual limited-release junmai sake, brewed exclusively during cherry blossom season. Pressed with spring water, rested in silence, and released only when it is ready. Only 500 bottles. Each one numbered.</p>
+        <p class="seasonal-desc">Pale gold, softly floral, and gone before summer arrives. Once the final bottle leaves the Blossom House, the season is closed until the blossoms return.</p>
+        <div class="seasonal-meta">
+          <div class="meta-item">
+            <p class="meta-lbl">ABV</p>
+            <p class="meta-val">15.8%</p>
+          </div>
+          <div class="meta-item">
+            <p class="meta-lbl">Style</p>
+            <p class="meta-val">Junmai Sake</p>
+          </div>
+          <div class="meta-item">
+            <p class="meta-lbl">Bottles</p>
+            <p class="meta-val">500 Only</p>
+          </div>
+          <div class="meta-item">
+            <p class="meta-lbl">Season</p>
+            <p class="meta-val">Spring</p>
+          </div>
+        </div>
+      </div>
+      <div class="seasonal-illo reveal-right">
+        <!-- Large elderflower / spring branch SVG -->
+        <svg width="300" height="360" viewBox="0 0 300 360" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:var(--rose);opacity:.82">
+          <!-- main stem -->
+          <path d="M150 348 C148 326 145 302 142 278 C138 250 132 222 130 195 C128 168 132 148 138 128 C144 108 150 88 148 68 C146 48 142 30 145 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".65"/>
+          <!-- branch R1 -->
+          <path d="M138 128 C148 120 162 112 178 107 C194 102 210 100 222 98" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" opacity=".65"/>
+          <!-- branch L1 -->
+          <path d="M132 170 C121 161 108 153 95 149 C82 145 69 145 58 142" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" opacity=".65"/>
+          <!-- branch R2 -->
+          <path d="M142 210 C153 200 168 190 185 185 C202 180 218 178 230 177" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity=".6"/>
+          <!-- branch L2 -->
+          <path d="M145 252 C134 244 119 236 104 232 C89 228 74 228 63 226" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity=".6"/>
+
+          <!-- FLOWER CLUSTER R1 (near 222,98) -->
+          <!-- flower A -->
+          <path d="M212 90 C212 85 215.5 83 218.5 85.5 C221.5 83 225 85.5 224.5 90.5 C227 93 226.5 97.5 222 99.5 C217.5 101.5 211.5 99 210 95 C208.5 91 210.5 88.5 212 90Z" stroke="currentColor" stroke-width="1" fill="none"/>
+          <circle cx="218" cy="92.5" r="1.4" fill="currentColor" opacity=".7"/>
+          <!-- flower B -->
+          <path d="M224 84 C225 79 228.5 77.5 231 80 C233.5 77.5 237 80 236 85 C238.5 87.5 237.5 92 233 93 C228.5 94 224.5 91 223 87Z" stroke="currentColor" stroke-width="1" fill="none"/>
+          <circle cx="230" cy="85.5" r="1.2" fill="currentColor" opacity=".65"/>
+          <!-- flower C -->
+          <path d="M221 102 C219 97.5 221.5 94.5 224.5 96 C226.5 93 230 95 229 99.5 C231.5 102 230.5 106.5 226.5 107.5 C222.5 108.5 219.5 104.5 221 102Z" stroke="currentColor" stroke-width="1" fill="none"/>
+          <circle cx="225" cy="101" r="1.2" fill="currentColor" opacity=".6"/>
+          <!-- bud D -->
+          <path d="M215 82 C214 79 216 77 218 78 C220 76 222 78 221 81" stroke="currentColor" stroke-width="1" stroke-linecap="round" fill="none"/>
+          <ellipse cx="218" cy="76.5" rx="1.8" ry="2.5" stroke="currentColor" stroke-width=".9" fill="none"/>
+
+          <!-- FLOWER CLUSTER L1 (near 58,142) -->
+          <path d="M48 134 C48 129 51.5 127 54.5 129.5 C57.5 127 61 129.5 60.5 134.5 C63 137 62.5 141.5 58 143.5 C53.5 145.5 47.5 143 46 139 C44.5 135 46.5 132.5 48 134Z" stroke="currentColor" stroke-width="1" fill="none"/>
+          <circle cx="54" cy="136.5" r="1.4" fill="currentColor" opacity=".7"/>
+          <path d="M61 128 C62 123 65.5 121.5 68 124 C70.5 121.5 74 124 73 129 C75.5 131.5 74.5 136 70 137 C65.5 138 61.5 135 60 131Z" stroke="currentColor" stroke-width="1" fill="none"/>
+          <circle cx="67" cy="129.5" r="1.2" fill="currentColor" opacity=".65"/>
+          <path d="M57 146 C55 141.5 57.5 138.5 60.5 140 C62.5 137 66 139 65 143.5 C67.5 146 66.5 150.5 62.5 151.5 C58.5 152.5 55.5 148.5 57 146Z" stroke="currentColor" stroke-width="1" fill="none"/>
+          <circle cx="61" cy="145" r="1.2" fill="currentColor" opacity=".6"/>
+
+          <!-- FLOWER CLUSTER R2 (near 230,177) -->
+          <path d="M220 169 C220 164 223.5 162 226.5 164.5 C229.5 162 233 164.5 232.5 169.5 C235 172 234.5 176.5 230 178.5 C225.5 180.5 219.5 178 218 174 C216.5 170 218.5 167.5 220 169Z" stroke="currentColor" stroke-width="1" fill="none"/>
+          <circle cx="226" cy="171.5" r="1.4" fill="currentColor" opacity=".7"/>
+          <path d="M233 163 C234 158 237.5 156.5 240 159 C242.5 156.5 246 159 245 164 C247.5 166.5 246.5 171 242 172 C237.5 173 233.5 170 232 166Z" stroke="currentColor" stroke-width="1" fill="none"/>
+          <circle cx="239" cy="164.5" r="1.2" fill="currentColor" opacity=".65"/>
+
+          <!-- FLOWER CLUSTER L2 (near 63,226) -->
+          <path d="M53 218 C53 213 56.5 211 59.5 213.5 C62.5 211 66 213.5 65.5 218.5 C68 221 67.5 225.5 63 227.5 C58.5 229.5 52.5 227 51 223 C49.5 219 51.5 216.5 53 218Z" stroke="currentColor" stroke-width="1" fill="none"/>
+          <circle cx="59" cy="220.5" r="1.4" fill="currentColor" opacity=".7"/>
+          <path d="M66 212 C67 207 70.5 205.5 73 208 C75.5 205.5 79 208 78 213 C80.5 215.5 79.5 220 75 221 C70.5 222 66.5 219 65 215Z" stroke="currentColor" stroke-width="1" fill="none"/>
+          <circle cx="72" cy="213.5" r="1.2" fill="currentColor" opacity=".65"/>
+
+          <!-- top cluster on main stem -->
+          <path d="M140 22 C140 17 143.5 15 146.5 17.5 C149.5 15 153 17.5 152.5 22.5 C155 25 154.5 29.5 150 31.5 C145.5 33.5 139.5 31 138 27 C136.5 23 138.5 20.5 140 22Z" stroke="currentColor" stroke-width="1" fill="none"/>
+          <circle cx="146" cy="24.5" r="1.3" fill="currentColor" opacity=".7"/>
+          <path d="M154 16 C155 11 158.5 9.5 161 12 C163.5 9.5 167 12 166 17 C168.5 19.5 167.5 24 163 25 C158.5 26 154.5 23 153 19Z" stroke="currentColor" stroke-width="1" fill="none"/>
+          <circle cx="160" cy="17.5" r="1.2" fill="currentColor" opacity=".65"/>
+
+          <!-- leaves along main stem -->
+          <path d="M140 108 C145 100 156 97 160 101 C155 106 148 109 140 108Z" stroke="currentColor" stroke-width="1" fill="none"/>
+          <path d="M140 108 L160 101" stroke="currentColor" stroke-width=".6" stroke-linecap="round" opacity=".45"/>
+          <path d="M134 155 C128 147 117 144 113 148 C119 154 127 157 134 155Z" stroke="currentColor" stroke-width="1" fill="none"/>
+          <path d="M134 155 L113 148" stroke="currentColor" stroke-width=".6" stroke-linecap="round" opacity=".45"/>
+          <path d="M143 193 C148 185 159 183 163 187 C158 192 151 195 143 193Z" stroke="currentColor" stroke-width="1" fill="none"/>
+          <path d="M143 193 L163 187" stroke="currentColor" stroke-width=".6" stroke-linecap="round" opacity=".45"/>
+          <path d="M138 240 C132 232 121 230 117 234 C123 240 131 243 138 240Z" stroke="currentColor" stroke-width="1" fill="none"/>
+          <path d="M138 240 L117 234" stroke="currentColor" stroke-width=".6" stroke-linecap="round" opacity=".45"/>
+
+          <!-- scattered petals -->
+          <path d="M80 80 C81 77 84 76.5 84.5 79.5" stroke="currentColor" stroke-width=".8" stroke-linecap="round" opacity=".28"/>
+          <path d="M242 130 C244 127 247 127.5 246.5 131" stroke="currentColor" stroke-width=".8" stroke-linecap="round" opacity=".25"/>
+          <path d="M95 275 C96 272 99 272 99 275" stroke="currentColor" stroke-width=".8" stroke-linecap="round" opacity=".22"/>
+          <path d="M230 248 C232 245 235 246 234.5 249" stroke="currentColor" stroke-width=".8" stroke-linecap="round" opacity=".22"/>
+          <path d="M170 308 C172 305 175 306 174.5 309" stroke="currentColor" stroke-width=".8" stroke-linecap="round" opacity=".18"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     STOCKISTS
+════════════════════════════════════════════════════════ -->
+<section id="stockists">
+  <div class="container">
+    <div class="stockists-body">
+      <p class="label reveal" style="display:block;text-align:center;">Available Worldwide</p>
+      <h2 class="heading reveal" style="text-align:center;">Find Blossom</h2>
+      <p class="stockists-sub reveal">From the pub at the end of the lane to craft beer bars across four continents. Blossom has found its way to the world, one careful pour at a time.</p>
+      <div class="regions reveal">
+        <div class="region">
+          <p class="region-name">San Andreas</p>
+          <p class="region-detail">Statewide · 400+ venues</p>
+        </div>
+        <div class="region">
+          <p class="region-name">Liberty City</p>
+          <p class="region-detail">Selected craft stockists</p>
+        </div>
+        <div class="region">
+          <p class="region-name">Vice City</p>
+          <p class="region-detail">Bars &amp; bottle shops</p>
+        </div>
+        <div class="region">
+          <p class="region-name">Worldwide Export</p>
+          <p class="region-detail">International distribution</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <img src="Blossomlogo.png" alt="Blossom Breweries" style="max-height:140px;display:block;margin-bottom:1.2rem;">
+        <p class="ftagline">"Brewed with Nature.<br>Bottled with Soul."</p>
+      </div>
+      <div>
+        <p class="fcol-head">Products</p>
+        <ul class="fcol-links">
+          <li><a href="#beers">Harvest Gold Ale</a></li>
+          <li><a href="#beers">Midnight Porter</a></li>
+          <li><a href="#beers">Meadow Lager</a></li>
+          <li><a href="#beers">Blossom Rose Cider</a></li>
+          <li><a href="#seasonal">Seasonal Releases</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="fcol-head">Visit</p>
+        <ul class="fcol-links">
+          <li><a href="#taproom">The Taproom</a></li>
+          <li><a href="#taproom">Opening Hours</a></li>
+          <li><a href="#stockists">Find a Stockist</a></li>
+          <li><a href="#">Tours &amp; Events</a></li>
+          <li><a href="#">Press Enquiries</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="fcol-head">Follow Us</p>
+        <div class="socials">
+          <a href="#" aria-label="Instagram">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5"/>
+              <circle cx="12" cy="12" r="4.5"/>
+              <circle cx="17.5" cy="6.5" r=".9" fill="currentColor" stroke="none"/>
+            </svg>
+          </a>
+          <a href="#" aria-label="Facebook">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+            </svg>
+          </a>
+          <a href="#" aria-label="X">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+          </a>
+        </div>
+        <p class="faddress">The Blossom House<br>Rockford Hills<br>Los Santos, San Andreas</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="fcopy">© 2025 Blossom Breweries Ltd. Los Santos, San Andreas. All rights reserved.</p>
+      <div class="flegal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+        <a href="#">Cookie Preferences</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ── NAV SCROLL ────────────────────────────────────────
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 70);
+  }, { passive: true });
+
+  // ── HAMBURGER ─────────────────────────────────────────
+  const ham = document.getElementById('ham');
+  const mob = document.getElementById('mob');
+  ham.addEventListener('click', () => {
+    const open = mob.classList.toggle('open');
+    ham.classList.toggle('open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+  document.querySelectorAll('.mlink').forEach(a => {
+    a.addEventListener('click', () => {
+      mob.classList.remove('open');
+      ham.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+
+  // ── SMOOTH SCROLL ────────────────────────────────────
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href');
+      if (id === '#') return;
+      const el = document.querySelector(id);
+      if (!el) return;
+      e.preventDefault();
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // ── INTERSECTION OBSERVER ────────────────────────────
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -48px 0px' });
+
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right')
+    .forEach(el => io.observe(el));
+</script>
+</body>
+</html>

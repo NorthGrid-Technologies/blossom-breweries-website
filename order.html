@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Direct: Blossom Breweries</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,500;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <style>
+    /* ── CUSTOM PROPERTIES ─────────────────────────────── */
+    :root {
+      --bg:          #1a1209;
+      --bg-mid:      #221810;
+      --cream:       #f5ead0;
+      --cream-dim:   #b8a88a;
+      --rose:        #c9748a;
+      --rose-dark:   #a85970;
+      --rose-light:  #e8a0b0;
+      --gold:        #b8924a;
+
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans:  'DM Sans', system-ui, sans-serif;
+
+      --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    /* ── RESET ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: var(--sans);
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    img, svg { display: block; max-width: 100%; }
+
+    /* ── NAVIGATION ────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 900;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 110px;
+      padding: 0.5rem 4rem;
+      transition: min-height 0.4s ease, padding 0.4s ease, background 0.4s ease, border-color 0.4s ease;
+      border-bottom: 1px solid transparent;
+    }
+    .nav.scrolled {
+      background: rgba(22, 14, 7, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      min-height: 80px;
+      padding: 0.5rem 4rem;
+      border-color: rgba(201,116,138,.12);
+    }
+
+    .nav-logo img {
+      max-height: 100px;
+      width: auto;
+      display: block;
+      transition: opacity .3s;
+    }
+    .nav-logo img:hover { opacity: .85; }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      align-items: center;
+    }
+    .nav-links a {
+      font-size: .72rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--cream-dim);
+      position: relative;
+      transition: color .3s;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0;
+      width: 0; height: 1px;
+      background: var(--rose);
+      transition: width .3s;
+    }
+    .nav-links a:hover { color: var(--cream); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-links a.active { color: var(--rose); }
+    .nav-links a.active::after { width: 100%; }
+
+    /* hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+      z-index: 1100;
+    }
+    .hamburger span {
+      display: block;
+      width: 22px; height: 1.5px;
+      background: var(--cream);
+      transition: all .3s ease;
+      transform-origin: center;
+    }
+    .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(4.5px,4.5px); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(4.5px,-4.5px); }
+
+    /* mobile overlay */
+    .mob-menu {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 2.5rem;
+      transform: translateX(100%);
+      transition: transform .5s cubic-bezier(.77,0,.18,1);
+    }
+    .mob-menu.open { transform: none; }
+    .mob-menu a {
+      font-family: var(--serif);
+      font-size: 2.2rem;
+      font-weight: 500;
+      color: var(--cream);
+      transition: color .25s;
+    }
+    .mob-menu a:hover { color: var(--rose); }
+
+    /* ── HERO ──────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      min-height: 40vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+      background: radial-gradient(ellipse 90% 70% at 50% 55%, #3d2614 0%, #1a1209 58%, #090603 100%);
+    }
+
+    /* animated grain */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: -10%;
+      width: 120%; height: 120%;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+      animation: grain-drift 9s steps(12) infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+    @keyframes grain-drift {
+      0%   { transform: translate(0,0); }
+      11%  { transform: translate(-2%,-3%); }
+      22%  { transform: translate(3%,2%); }
+      33%  { transform: translate(-1%,4%); }
+      44%  { transform: translate(2%,-2%); }
+      55%  { transform: translate(-3%,1%); }
+      66%  { transform: translate(1%,-4%); }
+      77%  { transform: translate(-2%,3%); }
+      88%  { transform: translate(3%,-1%); }
+    }
+
+    .hero-body {
+      position: relative;
+      z-index: 3;
+      padding: 0 1.5rem;
+      padding-top: 110px;
+    }
+
+    .hero-eyebrow {
+      font-size: .68rem;
+      letter-spacing: .38em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp .8s var(--ease-out) .4s forwards;
+    }
+
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(3rem, 8vw, 7.5rem);
+      font-weight: 700;
+      line-height: .93;
+      letter-spacing: -.01em;
+      margin-bottom: 2rem;
+    }
+    .hero-title .line { display: block; overflow: hidden; }
+    .hero-title .line-inner {
+      display: block;
+      opacity: 0;
+      transform: translateY(105%);
+      animation: lineUp .95s var(--ease-out) forwards;
+    }
+    .hero-title .line:nth-child(1) .line-inner { animation-delay: .55s; }
+
+    .hero-sub {
+      font-size: .88rem;
+      letter-spacing: .12em;
+      color: var(--cream-dim);
+      font-weight: 300;
+      opacity: 0;
+      animation: fadeUp .8s var(--ease-out) 1s forwards;
+      padding-bottom: 3rem;
+    }
+
+    @keyframes lineUp {
+      to { opacity: 1; transform: none; }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* ── ORDER SECTION ─────────────────────────────────── */
+    #order-section {
+      background: var(--bg);
+      padding: 6rem 4rem;
+    }
+    .order-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .order-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 3.5rem;
+      align-items: start;
+    }
+
+    /* ── FORM INPUTS ───────────────────────────────────── */
+    .field-wrap { margin-bottom: 1.6rem; }
+    .field-wrap label {
+      font-family: var(--sans);
+      font-size: 0.62rem;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      color: var(--cream-dim);
+      display: block;
+      margin-bottom: .4rem;
+    }
+    .field-wrap input,
+    .field-wrap textarea,
+    .field-wrap select {
+      background: #0f0a04;
+      border: 1px solid rgba(245,234,208,0.28);
+      border-radius: 2px;
+      color: var(--cream);
+      padding: .85rem 1rem;
+      font-family: var(--sans);
+      font-size: .9rem;
+      font-weight: 300;
+      width: 100%;
+      display: block;
+      transition: border-color .25s, box-shadow .25s;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .field-wrap textarea { resize: vertical; }
+    .field-wrap input:focus,
+    .field-wrap textarea:focus {
+      border-color: var(--rose);
+      box-shadow: 0 0 0 3px rgba(201,116,138,.12);
+    }
+    .field-wrap input.error,
+    .field-wrap textarea.error {
+      border-color: #c94a4a;
+      box-shadow: 0 0 0 3px rgba(201,74,74,.10);
+    }
+    .error-msg {
+      font-size: .72rem;
+      color: #c97474;
+      margin-top: .35rem;
+      display: none;
+    }
+    .field-wrap input.error ~ .error-msg,
+    .field-wrap textarea.error ~ .error-msg {
+      display: block;
+    }
+
+    /* two column fields row */
+    .fields-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+    }
+
+    /* ── PRODUCT SELECTION ─────────────────────────────── */
+    .products-heading {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--cream);
+      margin: 2.5rem 0 1.5rem;
+    }
+
+    .product-subgroup-heading {
+      font-family: var(--sans);
+      font-size: 0.6rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin: 1.5rem 0 .8rem;
+    }
+
+    .product-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .7rem 0;
+      border-bottom: 1px solid rgba(245,234,208,.06);
+    }
+    .product-row:last-child { border-bottom: none; }
+
+    .product-info {
+      display: flex;
+      align-items: baseline;
+      gap: .5rem;
+    }
+    .product-name {
+      font-family: var(--sans);
+      font-size: .88rem;
+      color: var(--cream);
+      font-weight: 400;
+    }
+    .product-price {
+      font-family: var(--sans);
+      font-size: .75rem;
+      color: var(--cream-dim);
+    }
+
+    /* quantity spinner */
+    .qty-input {
+      width: 64px !important;
+      text-align: center;
+      padding: .5rem !important;
+      background: #0f0a04;
+      border: 1px solid rgba(245,234,208,0.28);
+      border-radius: 2px;
+      color: var(--cream);
+      font-family: var(--sans);
+      font-size: .88rem;
+      font-weight: 400;
+      transition: border-color .25s, box-shadow .25s;
+      outline: none;
+      flex-shrink: 0;
+    }
+    .qty-input:focus {
+      border-color: var(--rose);
+      box-shadow: 0 0 0 3px rgba(201,116,138,.12);
+    }
+
+    /* hide number spinners */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+    input[type=number] { -moz-appearance: textfield; appearance: textfield; }
+
+    /* ── SUBMIT BUTTON ─────────────────────────────────── */
+    .submit-btn {
+      width: 100%;
+      background: var(--rose);
+      color: var(--bg);
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      padding: 1.2rem;
+      border-radius: 2px;
+      border: none;
+      cursor: pointer;
+      margin-top: 2rem;
+      transition: background .3s, transform .3s;
+    }
+    .submit-btn:hover:not(:disabled) {
+      background: var(--rose-light);
+      transform: translateY(-2px);
+    }
+    .submit-btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    #form-error {
+      display: none;
+      margin-top: 1.2rem;
+      font-family: var(--sans);
+      font-size: .84rem;
+      color: var(--rose);
+      letter-spacing: .04em;
+    }
+
+    /* ── ORDER SUMMARY PANEL ───────────────────────────── */
+    .summary-panel {
+      position: sticky;
+      top: 130px;
+      background: linear-gradient(160deg, #231911, #1c1409);
+      border: 1px solid rgba(201,116,138,.15);
+      border-radius: 2px;
+      padding: 2rem;
+    }
+
+    .summary-heading {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      color: var(--cream);
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(245,234,208,.08);
+    }
+
+    #summary-empty {
+      font-family: var(--sans);
+      font-size: .85rem;
+      color: var(--cream-dim);
+      font-style: italic;
+    }
+
+    #summary-list {
+      display: none;
+      margin-bottom: 1rem;
+    }
+    #summary-list.has-items { display: block; }
+
+    #summary-list li {
+      display: flex;
+      justify-content: space-between;
+      padding: .5rem 0;
+      border-bottom: 1px solid rgba(245,234,208,.05);
+    }
+    #summary-list li:last-child { border-bottom: none; }
+
+    .summary-item-name {
+      font-size: .82rem;
+      color: var(--cream-dim);
+      padding-right: 1rem;
+    }
+    .summary-item-sub {
+      font-size: .82rem;
+      color: var(--cream);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    /* totals */
+    .totals-area {
+      margin-top: 1rem;
+    }
+    .totals-divider {
+      border: none;
+      border-top: 1px solid rgba(245,234,208,.12);
+      margin: .8rem 0;
+    }
+    .totals-line {
+      display: flex;
+      justify-content: space-between;
+      padding: .4rem 0;
+      align-items: baseline;
+    }
+    .totals-label {
+      font-family: var(--sans);
+      font-size: .75rem;
+      color: var(--cream-dim);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+    .totals-value {
+      font-family: var(--sans);
+      font-size: .85rem;
+      color: var(--cream);
+    }
+    .totals-value.free { color: var(--rose); font-weight: 500; }
+    .totals-total-label {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      color: var(--cream);
+      font-weight: 700;
+    }
+    .totals-total-value {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      color: var(--cream);
+      font-weight: 700;
+    }
+
+    /* ── CONFIRMATION OVERLAY ──────────────────────────── */
+    #confirm-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: rgba(10,6,2,0.97);
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+    }
+    #confirm-overlay.visible { display: flex; }
+
+    #confirm-overlay img {
+      max-height: 100px;
+      width: auto;
+      margin-bottom: 2rem;
+    }
+    #confirm-overlay h2 {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 1rem;
+    }
+    #confirm-overlay p {
+      font-family: var(--sans);
+      font-size: 1rem;
+      color: var(--cream-dim);
+      margin-bottom: .5rem;
+    }
+    #confirm-overlay .sub {
+      font-size: .85rem;
+      color: var(--cream-dim);
+      margin-bottom: 2.5rem;
+    }
+    #confirm-close {
+      background: var(--rose);
+      color: var(--bg);
+      font-family: var(--sans);
+      font-size: .8rem;
+      font-weight: 500;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      padding: 1rem 2.8rem;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      transition: background .3s, transform .3s;
+    }
+    #confirm-close:hover {
+      background: var(--rose-light);
+      transform: translateY(-2px);
+    }
+
+    /* ── FOOTER ────────────────────────────────────────── */
+    footer {
+      background: #0c0906;
+      padding: 6rem 4rem 2rem;
+      border-top: 1px solid rgba(201,116,138,.09);
+    }
+    .container { max-width: 1240px; margin: 0 auto; }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 4rem;
+      padding-bottom: 4.5rem;
+      border-bottom: 1px solid rgba(245,234,208,.07);
+    }
+
+    .ftagline {
+      margin-top: 1.6rem;
+      font-size: .83rem;
+      color: var(--cream-dim);
+      font-style: italic;
+      line-height: 1.75;
+    }
+
+    .fcol-head {
+      font-size: .6rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 1.5rem;
+    }
+    .fcol-links { display: flex; flex-direction: column; gap: .85rem; }
+    .fcol-links a { font-size: .84rem; color: var(--cream-dim); transition: color .25s; }
+    .fcol-links a:hover { color: var(--cream); }
+
+    .socials { display: flex; gap: .9rem; margin-top: .4rem; }
+    .socials a {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(245,234,208,.14);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--cream-dim);
+      transition: border-color .3s, color .3s, background .3s;
+    }
+    .socials a:hover {
+      border-color: var(--rose);
+      color: var(--rose);
+      background: rgba(201,116,138,.08);
+    }
+
+    .faddress { margin-top: 1.6rem; font-size: .8rem; color: var(--cream-dim); line-height: 1.8; }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 2rem;
+    }
+    .fcopy { font-size: .73rem; color: rgba(245,234,208,.28); letter-spacing: .07em; }
+    .flegal { display: flex; gap: 2rem; }
+    .flegal a { font-size: .73rem; color: rgba(245,234,208,.28); transition: color .25s; }
+    .flegal a:hover { color: var(--cream-dim); }
+
+    /* ── RESPONSIVE ────────────────────────────────────── */
+    @media (max-width: 820px) {
+      #order-section { padding: 5rem 1.5rem; }
+
+      .order-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-panel {
+        position: static;
+      }
+
+      .nav { padding: 1.3rem 2rem; }
+      .nav.scrolled { padding: .9rem 2rem; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+
+      .fields-row { grid-template-columns: 1fr; gap: 0; }
+
+      .footer-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      footer { padding: 4rem 2rem 2rem; }
+      .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
+      .flegal { justify-content: center; }
+    }
+
+    @media (max-width: 1100px) {
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 3rem; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-title { font-size: clamp(2.4rem, 12vw, 3.5rem); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     NAVIGATION
+════════════════════════════════════════════════════════ -->
+<nav class="nav" id="nav">
+  <a href="index.html" class="nav-logo">
+    <img src="Blossomlogo.png" alt="Blossom Breweries">
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#beers">Our Beers</a></li>
+    <li><a href="index.html#japanese-range">Japanese Range</a></li>
+    <li><a href="index.html#story">Our Story</a></li>
+    <li><a href="index.html#taproom">Taproom</a></li>
+    <li><a href="index.html#seasonal">Seasonal</a></li>
+    <li><a href="index.html#stockists">Visit Us</a></li>
+    <li><a href="menu.html">Menu</a></li>
+    <li><a href="order.html" class="active">Order</a></li>
+  </ul>
+  <button class="hamburger" id="ham" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mob-menu" id="mob">
+  <a href="index.html#beers"          class="mlink">Our Beers</a>
+  <a href="index.html#japanese-range" class="mlink">Japanese Range</a>
+  <a href="index.html#story"          class="mlink">Our Story</a>
+  <a href="index.html#taproom"        class="mlink">Taproom</a>
+  <a href="index.html#seasonal"       class="mlink">Seasonal</a>
+  <a href="index.html#stockists"      class="mlink">Visit Us</a>
+  <a href="menu.html"                 class="mlink">Menu</a>
+  <a href="order.html"                class="mlink">Order</a>
+</div>
+
+<main>
+
+<!-- ═══════════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════════════ -->
+<section class="hero" id="hero">
+  <div class="hero-body">
+    <p class="hero-eyebrow">LOS SANTOS &nbsp;·&nbsp; EST. 2025</p>
+    <h1 class="hero-title">
+      <span class="line"><span class="line-inner">Order Direct</span></span>
+    </h1>
+    <p class="hero-sub">Delivered across San Andreas. Free shipping on orders over £80.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     ORDER SECTION
+════════════════════════════════════════════════════════ -->
+<section id="order-section">
+  <div class="order-container">
+    <div class="order-grid">
+
+      <!-- ── LEFT: FORM ─────────────────────────────────── -->
+      <div class="order-form-col">
+        <form id="order-form" novalidate>
+
+          <!-- Customer Details -->
+          <h3 class="products-heading" style="margin-top:0;">Your Details</h3>
+
+          <div class="field-wrap">
+            <label for="full-name">Full Name</label>
+            <input type="text" id="full-name" name="full-name" placeholder="Thomas Whitmore" required>
+            <span class="error-msg">Please enter your full name.</span>
+          </div>
+
+          <div class="field-wrap">
+            <label for="email">Discord Username</label>
+            <input type="text" id="email" name="email" placeholder="(( Discord Username ))" required>
+            <span class="error-msg">Please enter your Discord username.</span>
+          </div>
+
+          <div class="field-wrap">
+            <label for="address">Delivery Address</label>
+            <textarea id="address" name="address" rows="3" placeholder="Street address, apartment, suite…" required></textarea>
+            <span class="error-msg">Please enter your delivery address.</span>
+          </div>
+
+          <div class="fields-row">
+            <div class="field-wrap">
+              <label for="city">City</label>
+              <input type="text" id="city" name="city" placeholder="Los Santos" required>
+              <span class="error-msg">Please enter your city.</span>
+            </div>
+            <div class="field-wrap">
+              <label for="postcode">Phone Number</label>
+              <input type="tel" id="postcode" name="postcode" placeholder="+1 555 000 0000" required>
+              <span class="error-msg">Please enter your phone number.</span>
+            </div>
+          </div>
+
+          <!-- Product Selection -->
+          <h3 class="products-heading">Select Products</h3>
+
+          <!-- ALES & LAGERS -->
+          <p class="product-subgroup-heading">Ales &amp; Lagers</p>
+
+          <div class="product-row">
+            <div class="product-info">
+              <span class="product-name">Harvest Gold Ale</span>
+              <span class="product-price">£18/case</span>
+            </div>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-product-id="harvest-gold" data-price="18"
+                   data-name="Harvest Gold Ale" aria-label="Quantity for Harvest Gold Ale">
+          </div>
+
+          <div class="product-row">
+            <div class="product-info">
+              <span class="product-name">Midnight Porter</span>
+              <span class="product-price">£22/case</span>
+            </div>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-product-id="midnight-porter" data-price="22"
+                   data-name="Midnight Porter" aria-label="Quantity for Midnight Porter">
+          </div>
+
+          <div class="product-row">
+            <div class="product-info">
+              <span class="product-name">Meadow Lager</span>
+              <span class="product-price">£16/case</span>
+            </div>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-product-id="meadow-lager" data-price="16"
+                   data-name="Meadow Lager" aria-label="Quantity for Meadow Lager">
+          </div>
+
+          <div class="product-row">
+            <div class="product-info">
+              <span class="product-name">Pale Bloom IPA</span>
+              <span class="product-price">£24/case</span>
+            </div>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-product-id="pale-bloom-ipa" data-price="24"
+                   data-name="Pale Bloom IPA" aria-label="Quantity for Pale Bloom IPA">
+          </div>
+
+          <div class="product-row">
+            <div class="product-info">
+              <span class="product-name">Amber Harvest</span>
+              <span class="product-price">£20/case</span>
+            </div>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-product-id="amber-harvest" data-price="20"
+                   data-name="Amber Harvest" aria-label="Quantity for Amber Harvest">
+          </div>
+
+          <!-- JAPANESE RANGE -->
+          <p class="product-subgroup-heading">Japanese Range</p>
+
+          <div class="product-row">
+            <div class="product-info">
+              <span class="product-name">Sakura Sake</span>
+              <span class="product-price">£45/bottle</span>
+            </div>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-product-id="sakura-sake" data-price="45"
+                   data-name="Sakura Sake" aria-label="Quantity for Sakura Sake">
+          </div>
+
+          <div class="product-row">
+            <div class="product-info">
+              <span class="product-name">Yuzu Lager</span>
+              <span class="product-price">£18/case</span>
+            </div>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-product-id="yuzu-lager" data-price="18"
+                   data-name="Yuzu Lager" aria-label="Quantity for Yuzu Lager">
+          </div>
+
+          <div class="product-row">
+            <div class="product-info">
+              <span class="product-name">Matcha Wit</span>
+              <span class="product-price">£20/case</span>
+            </div>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-product-id="matcha-wit" data-price="20"
+                   data-name="Matcha Wit" aria-label="Quantity for Matcha Wit">
+          </div>
+
+          <div class="product-row">
+            <div class="product-info">
+              <span class="product-name">Umeshu Plum Wine</span>
+              <span class="product-price">£38/bottle</span>
+            </div>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-product-id="umeshu-plum-wine" data-price="38"
+                   data-name="Umeshu Plum Wine" aria-label="Quantity for Umeshu Plum Wine">
+          </div>
+
+          <div class="product-row">
+            <div class="product-info">
+              <span class="product-name">Shochu Highball</span>
+              <span class="product-price">£52/24-pack</span>
+            </div>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-product-id="shochu-highball" data-price="52"
+                   data-name="Shochu Highball" aria-label="Quantity for Shochu Highball">
+          </div>
+
+          <div class="product-row">
+            <div class="product-info">
+              <span class="product-name">Shiso Gin &amp; Tonic</span>
+              <span class="product-price">£52/24-pack</span>
+            </div>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-product-id="shiso-gt" data-price="52"
+                   data-name="Shiso Gin &amp; Tonic" aria-label="Quantity for Shiso Gin and Tonic">
+          </div>
+
+          <!-- CIDER & WINE -->
+          <p class="product-subgroup-heading">Cider &amp; Wine</p>
+
+          <div class="product-row">
+            <div class="product-info">
+              <span class="product-name">Blossom Rose Cider</span>
+              <span class="product-price">£18/case</span>
+            </div>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-product-id="blossom-rose-cider" data-price="18"
+                   data-name="Blossom Rose Cider" aria-label="Quantity for Blossom Rose Cider">
+          </div>
+
+          <div class="product-row">
+            <div class="product-info">
+              <span class="product-name">Golden Orchard Cider</span>
+              <span class="product-price">£20/case</span>
+            </div>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-product-id="golden-orchard-cider" data-price="20"
+                   data-name="Golden Orchard Cider" aria-label="Quantity for Golden Orchard Cider">
+          </div>
+
+          <div class="product-row">
+            <div class="product-info">
+              <span class="product-name">Yuzu Plum Wine</span>
+              <span class="product-price">£34/bottle</span>
+            </div>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-product-id="yuzu-plum-wine" data-price="34"
+                   data-name="Yuzu Plum Wine" aria-label="Quantity for Yuzu Plum Wine">
+          </div>
+
+          <div class="product-row">
+            <div class="product-info">
+              <span class="product-name">Sakura Season Sake <span style="font-size:.72rem;color:var(--rose);letter-spacing:.08em;">(LIMITED)</span></span>
+              <span class="product-price">£68/bottle</span>
+            </div>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-product-id="sakura-season-sake" data-price="68"
+                   data-name="Sakura Season Sake" aria-label="Quantity for Sakura Season Sake">
+          </div>
+
+          <!-- CANNED & RTD -->
+          <p class="product-subgroup-heading">Canned &amp; RTD</p>
+
+          <div class="product-row">
+            <div class="product-info">
+              <span class="product-name">Meadow Lager (can)</span>
+              <span class="product-price">£40/24-pack</span>
+            </div>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-product-id="meadow-lager-can" data-price="40"
+                   data-name="Meadow Lager (can)" aria-label="Quantity for Meadow Lager can">
+          </div>
+
+          <div class="product-row">
+            <div class="product-info">
+              <span class="product-name">Harvest Gold (can)</span>
+              <span class="product-price">£40/24-pack</span>
+            </div>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-product-id="harvest-gold-can" data-price="40"
+                   data-name="Harvest Gold (can)" aria-label="Quantity for Harvest Gold can">
+          </div>
+
+          <div class="product-row">
+            <div class="product-info">
+              <span class="product-name">Yuzu Lager (can)</span>
+              <span class="product-price">£44/24-pack</span>
+            </div>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-product-id="yuzu-lager-can" data-price="44"
+                   data-name="Yuzu Lager (can)" aria-label="Quantity for Yuzu Lager can">
+          </div>
+
+          <div class="product-row">
+            <div class="product-info">
+              <span class="product-name">Shochu Highball (can)</span>
+              <span class="product-price">£52/24-pack</span>
+            </div>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-product-id="shochu-highball-can" data-price="52"
+                   data-name="Shochu Highball (can)" aria-label="Quantity for Shochu Highball can">
+          </div>
+
+          <div class="product-row">
+            <div class="product-info">
+              <span class="product-name">Shiso G&amp;T (can)</span>
+              <span class="product-price">£52/24-pack</span>
+            </div>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-product-id="shiso-gt-can" data-price="52"
+                   data-name="Shiso G&amp;T (can)" aria-label="Quantity for Shiso G and T can">
+          </div>
+
+          <!-- Special Instructions -->
+          <h3 class="products-heading">Special Instructions</h3>
+
+          <div class="field-wrap">
+            <label for="notes">Delivery Notes <span style="color:rgba(184,168,138,.5);font-size:.58rem;letter-spacing:.2em;">(OPTIONAL)</span></label>
+            <textarea id="notes" name="notes" rows="3" placeholder="Any special requests or delivery notes…"></textarea>
+          </div>
+
+          <p id="form-error">Something went wrong. Please try again.</p>
+          <button type="submit" class="submit-btn">PLACE ORDER</button>
+
+        </form>
+      </div><!-- /order-form-col -->
+
+      <!-- ── RIGHT: SUMMARY PANEL ────────────────────────── -->
+      <aside class="summary-panel" aria-label="Order summary">
+        <h2 class="summary-heading">Your Order</h2>
+
+        <p id="summary-empty">No items selected yet.</p>
+
+        <ul id="summary-list" aria-live="polite"></ul>
+
+        <div class="totals-area">
+          <div class="totals-line">
+            <span class="totals-label">Subtotal</span>
+            <span class="totals-value" id="summary-subtotal">£0.00</span>
+          </div>
+          <div class="totals-line">
+            <span class="totals-label">Shipping</span>
+            <span class="totals-value" id="summary-shipping">£8.99</span>
+          </div>
+          <hr class="totals-divider">
+          <div class="totals-line">
+            <span class="totals-total-label">Total</span>
+            <span class="totals-total-value" id="summary-total">£0.00</span>
+          </div>
+        </div>
+      </aside>
+
+    </div><!-- /order-grid -->
+  </div><!-- /order-container -->
+</section>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <img src="Blossomlogo.png" alt="Blossom Breweries" style="max-height:140px;display:block;margin-bottom:1.2rem;">
+        <p class="ftagline">"Brewed with Nature.<br>Bottled with Soul."</p>
+      </div>
+      <div>
+        <p class="fcol-head">Products</p>
+        <ul class="fcol-links">
+          <li><a href="index.html#beers">Harvest Gold Ale</a></li>
+          <li><a href="index.html#beers">Midnight Porter</a></li>
+          <li><a href="index.html#beers">Meadow Lager</a></li>
+          <li><a href="index.html#beers">Blossom Rose Cider</a></li>
+          <li><a href="index.html#seasonal">Seasonal Releases</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="fcol-head">Visit</p>
+        <ul class="fcol-links">
+          <li><a href="index.html#taproom">The Taproom</a></li>
+          <li><a href="index.html#taproom">Opening Hours</a></li>
+          <li><a href="index.html#stockists">Find a Stockist</a></li>
+          <li><a href="#">Tours &amp; Events</a></li>
+          <li><a href="#">Press Enquiries</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="fcol-head">Follow Us</p>
+        <div class="socials">
+          <a href="#" aria-label="Instagram">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5"/>
+              <circle cx="12" cy="12" r="4.5"/>
+              <circle cx="17.5" cy="6.5" r=".9" fill="currentColor" stroke="none"/>
+            </svg>
+          </a>
+          <a href="#" aria-label="Facebook">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+            </svg>
+          </a>
+          <a href="#" aria-label="X">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+          </a>
+        </div>
+        <p class="faddress">The Blossom House<br>Rockford Hills<br>Los Santos, San Andreas</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="fcopy">© 2025 Blossom Breweries Ltd. Los Santos, San Andreas. All rights reserved.</p>
+      <div class="flegal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+        <a href="#">Cookie Preferences</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════
+     CONFIRMATION OVERLAY
+════════════════════════════════════════════════════════ -->
+<div id="confirm-overlay" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+  <img src="Blossomlogo.png" alt="Blossom Breweries">
+  <h2 id="confirm-title">Thank you, <span id="confirm-name"></span>.</h2>
+  <p>Your order is on its way.</p>
+  <p class="sub">We'll confirm your order via Discord within 24 hours.</p>
+  <button id="confirm-close">Back to Menu</button>
+</div>
+
+<script>
+  // ── NAV SCROLL ────────────────────────────────────────
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 70);
+  }, { passive: true });
+
+  // ── HAMBURGER ─────────────────────────────────────────
+  const ham = document.getElementById('ham');
+  const mob = document.getElementById('mob');
+  ham.addEventListener('click', () => {
+    const open = mob.classList.toggle('open');
+    ham.classList.toggle('open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+  document.querySelectorAll('.mlink').forEach(a => {
+    a.addEventListener('click', () => {
+      mob.classList.remove('open');
+      ham.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+
+  // ── ORDER SUMMARY ─────────────────────────────────────
+  const SHIPPING_THRESHOLD = 80;
+  const SHIPPING_COST      = 8.99;
+
+  const summaryEmpty    = document.getElementById('summary-empty');
+  const summaryList     = document.getElementById('summary-list');
+  const summarySubtotal = document.getElementById('summary-subtotal');
+  const summaryShipping = document.getElementById('summary-shipping');
+  const summaryTotal    = document.getElementById('summary-total');
+
+  function formatGBP(n) {
+    return '£' + n.toFixed(2);
+  }
+
+  function updateSummary() {
+    const qtyInputs = document.querySelectorAll('.qty-input');
+    let subtotal = 0;
+    const items = [];
+
+    qtyInputs.forEach(input => {
+      const qty = parseInt(input.value, 10) || 0;
+      if (qty > 0) {
+        const price = parseFloat(input.dataset.price);
+        const name  = input.dataset.name;
+        const lineTotal = qty * price;
+        subtotal += lineTotal;
+        items.push({ name, qty, lineTotal });
+      }
+    });
+
+    // Rebuild list
+    summaryList.innerHTML = '';
+    items.forEach(item => {
+      const li = document.createElement('li');
+      li.innerHTML =
+        '<span class="summary-item-name">' + item.name + ' &times; ' + item.qty + '</span>' +
+        '<span class="summary-item-sub">' + formatGBP(item.lineTotal) + '</span>';
+      summaryList.appendChild(li);
+    });
+
+    // Toggle empty state
+    if (items.length === 0) {
+      summaryEmpty.style.display = '';
+      summaryList.classList.remove('has-items');
+    } else {
+      summaryEmpty.style.display = 'none';
+      summaryList.classList.add('has-items');
+    }
+
+    // Shipping
+    const isFree    = subtotal >= SHIPPING_THRESHOLD;
+    const shipping  = isFree ? 0 : (subtotal > 0 ? SHIPPING_COST : 0);
+    const total     = subtotal + shipping;
+
+    summarySubtotal.textContent = formatGBP(subtotal);
+
+    if (subtotal === 0) {
+      summaryShipping.textContent = formatGBP(SHIPPING_COST);
+      summaryShipping.classList.remove('free');
+    } else if (isFree) {
+      summaryShipping.textContent = 'FREE';
+      summaryShipping.classList.add('free');
+    } else {
+      summaryShipping.textContent = formatGBP(SHIPPING_COST);
+      summaryShipping.classList.remove('free');
+    }
+
+    summaryTotal.textContent = formatGBP(subtotal === 0 ? 0 : total);
+  }
+
+  // Wire quantity inputs
+  document.querySelectorAll('.qty-input').forEach(input => {
+    input.addEventListener('input', () => {
+      // Clamp value
+      let v = parseInt(input.value, 10);
+      if (isNaN(v) || v < 0) { input.value = 0; }
+      else if (v > 99)       { input.value = 99; }
+      updateSummary();
+    });
+    input.addEventListener('change', () => {
+      let v = parseInt(input.value, 10);
+      if (isNaN(v) || v < 0) { input.value = 0; }
+      else if (v > 99)       { input.value = 99; }
+      updateSummary();
+    });
+  });
+
+  // ── FORM VALIDATION & SUBMIT ───────────────────────────
+  const form           = document.getElementById('order-form');
+  const confirmOverlay = document.getElementById('confirm-overlay');
+  const confirmName    = document.getElementById('confirm-name');
+  const confirmClose   = document.getElementById('confirm-close');
+
+  function validateField(field) {
+    const wrap = field.closest('.field-wrap');
+    if (!wrap) return true;
+
+    if (field.value.trim() === '') {
+      field.classList.add('error');
+      return false;
+    } else {
+      field.classList.remove('error');
+      return true;
+    }
+  }
+
+  // Remove error on input
+  form.querySelectorAll('input[required], textarea[required]').forEach(field => {
+    field.addEventListener('input', () => {
+      if (field.value.trim() !== '') {
+        field.classList.remove('error');
+      }
+    });
+  });
+
+  // POST orders to the local blossom-bot HTTP server.
+  // Change this URL to your VPS IP if hosting remotely, e.g. http://123.45.67.89:3000/new-order
+  const ORDER_ENDPOINT = 'http://localhost:3000/new-order';
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+
+    // ── Validate required fields ─────────────────────────
+    const requiredFields = form.querySelectorAll('input[required], textarea[required]');
+    let valid = true;
+    requiredFields.forEach(field => { if (!validateField(field)) valid = false; });
+
+    if (!valid) {
+      const firstError = form.querySelector('.error');
+      if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    // ── Collect order items ──────────────────────────────
+    const items = [];
+    let subtotal = 0;
+    document.querySelectorAll('.qty-input').forEach(input => {
+      const qty = parseInt(input.value, 10) || 0;
+      if (qty > 0) {
+        const price = parseFloat(input.dataset.price);
+        const name  = input.dataset.name;
+        subtotal += qty * price;
+        items.push({ name, qty, price });
+      }
+    });
+
+    const isFree   = subtotal >= SHIPPING_THRESHOLD;
+    const shipping = (subtotal === 0 || !isFree) ? SHIPPING_COST : 0;
+    const total    = subtotal + (subtotal === 0 ? 0 : shipping);
+
+    // ── Collect customer fields ──────────────────────────
+    const fullName       = document.getElementById('full-name').value.trim();
+    const discordUsername = document.getElementById('email').value.trim();
+    const address        = document.getElementById('address').value.trim();
+    const city           = document.getElementById('city').value.trim();
+    const phoneNumber    = document.getElementById('postcode').value.trim();
+    const notes          = document.getElementById('notes').value.trim() || 'None';
+
+    // ── Build order payload for blossom-bot ─────────────
+    const payload = {
+      customerName: fullName,
+      discordUsername,
+      address,
+      city,
+      phoneNumber,
+      items,
+      subtotal,
+      shipping,
+      total,
+      notes,
+    };
+
+    // ── Disable button, clear previous error ────────────
+    const submitBtn = form.querySelector('.submit-btn');
+    const formError = document.getElementById('form-error');
+    submitBtn.disabled    = true;
+    submitBtn.textContent = 'SENDING...';
+    formError.style.display = 'none';
+
+    // ── Send to blossom-bot ──────────────────────────────
+    try {
+      const res  = await fetch(ORDER_ENDPOINT, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload),
+      });
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        confirmName.textContent = fullName.split(' ')[0];
+        confirmOverlay.classList.add('visible');
+        document.body.style.overflow = 'hidden';
+      } else {
+        throw new Error(data.error || `Server responded with status ${res.status}`);
+      }
+    } catch (err) {
+      formError.style.display = 'block';
+    } finally {
+      submitBtn.disabled    = false;
+      submitBtn.textContent = 'PLACE ORDER';
+    }
+  });
+
+  confirmClose.addEventListener('click', () => {
+    confirmOverlay.classList.remove('visible');
+    document.body.style.overflow = '';
+
+    // Reset form
+    form.reset();
+    document.querySelectorAll('.qty-input').forEach(inp => { inp.value = 0; });
+    document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+    updateSummary();
+
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create a Drink: Blossom Breweries</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,500;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <style>
+    /* ── CUSTOM PROPERTIES ─────────────────────────────── */
+    :root {
+      --bg:          #1a1209;
+      --bg-mid:      #221810;
+      --cream:       #f5ead0;
+      --cream-dim:   #b8a88a;
+      --rose:        #c9748a;
+      --rose-dark:   #a85970;
+      --rose-light:  #e8a0b0;
+      --gold:        #b8924a;
+
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans:  'DM Sans', system-ui, sans-serif;
+
+      --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    /* ── RESET ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: var(--sans);
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+      position: relative;
+    }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    img, svg { display: block; max-width: 100%; }
+
+    /* Global grain */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: -10%;
+      width: 120%; height: 120%;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      animation: grain-drift 9s steps(12) infinite;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    @keyframes grain-drift {
+      0%   { transform: translate(0,0); }
+      11%  { transform: translate(-2%,-3%); }
+      22%  { transform: translate(3%,2%); }
+      33%  { transform: translate(-1%,4%); }
+      44%  { transform: translate(2%,-2%); }
+      55%  { transform: translate(-3%,1%); }
+      66%  { transform: translate(1%,-4%); }
+      77%  { transform: translate(-2%,3%); }
+      88%  { transform: translate(3%,-1%); }
+    }
+
+    /* ── NAVIGATION ────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 900;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 110px;
+      padding: 0.5rem 4rem;
+      transition: min-height 0.4s ease, padding 0.4s ease, background 0.4s ease, border-color 0.4s ease;
+      border-bottom: 1px solid transparent;
+    }
+    .nav.scrolled {
+      background: rgba(22, 14, 7, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      min-height: 80px;
+      padding: 0.5rem 4rem;
+      border-color: rgba(201,116,138,.12);
+    }
+
+    .nav-logo img {
+      max-height: 100px;
+      width: auto;
+      display: block;
+      transition: opacity .3s;
+    }
+    .nav-logo img:hover { opacity: .85; }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      align-items: center;
+    }
+    .nav-links a {
+      font-size: .72rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--cream-dim);
+      position: relative;
+      transition: color .3s;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0;
+      width: 0; height: 1px;
+      background: var(--rose);
+      transition: width .3s;
+    }
+    .nav-links a:hover { color: var(--cream); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-links a.active { color: var(--rose); }
+    .nav-links a.active::after { width: 100%; }
+
+    /* hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+      z-index: 1100;
+    }
+    .hamburger span {
+      display: block;
+      width: 22px; height: 1.5px;
+      background: var(--cream);
+      transition: all .3s ease;
+      transform-origin: center;
+    }
+    .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(4.5px,4.5px); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(4.5px,-4.5px); }
+
+    .mob-menu {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 2.5rem;
+      transform: translateX(100%);
+      transition: transform .5s cubic-bezier(.77,0,.18,1);
+    }
+    .mob-menu.open { transform: none; }
+    .mob-menu a {
+      font-family: var(--serif);
+      font-size: 2.2rem;
+      font-weight: 500;
+      color: var(--cream);
+      transition: color .25s;
+    }
+    .mob-menu a:hover { color: var(--rose); }
+
+    /* ── HERO ──────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      min-height: 50vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+      background: radial-gradient(ellipse 90% 70% at 50% 55%, #3d2614 0%, #1a1209 58%, #090603 100%);
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: -10%;
+      width: 120%; height: 120%;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+      animation: grain-drift 9s steps(12) infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .hero-body {
+      position: relative;
+      z-index: 3;
+      padding: 0 1.5rem;
+      padding-top: 110px;
+    }
+    .hero-eyebrow {
+      font-size: .68rem;
+      letter-spacing: .38em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp .8s var(--ease-out) .4s forwards;
+    }
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(3rem, 8vw, 7.5rem);
+      font-weight: 700;
+      line-height: .93;
+      letter-spacing: -.01em;
+      margin-bottom: 2rem;
+    }
+    .hero-title .line { display: block; overflow: hidden; }
+    .hero-title .line-inner {
+      display: block;
+      opacity: 0;
+      transform: translateY(105%);
+      animation: lineUp .95s var(--ease-out) forwards;
+    }
+    .hero-title .line:nth-child(1) .line-inner { animation-delay: .55s; }
+    .hero-sub {
+      font-size: .95rem;
+      letter-spacing: .12em;
+      color: var(--cream-dim);
+      font-weight: 300;
+      opacity: 0;
+      animation: fadeUp .8s var(--ease-out) 1s forwards;
+      padding-bottom: 3rem;
+      font-style: italic;
+    }
+
+    @keyframes lineUp {
+      to { opacity: 1; transform: none; }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* ── REVEAL ANIMATIONS ─────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 1s var(--ease-out), transform 1s var(--ease-out);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ── MAIN SECTION ──────────────────────────────────── */
+    #brief-section {
+      background: var(--bg);
+      padding: 6rem 4rem;
+      position: relative;
+      z-index: 1;
+    }
+    .brief-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .brief-grid {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .section-title {
+      font-family: var(--serif);
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: .5rem;
+      letter-spacing: -.01em;
+    }
+    .section-sub {
+      font-size: .82rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 2.5rem;
+    }
+
+    /* ── FORM INPUTS ───────────────────────────────────── */
+    .field-wrap { margin-bottom: 1.6rem; }
+    .field-wrap label {
+      font-family: var(--sans);
+      font-size: 0.62rem;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      color: var(--cream-dim);
+      display: block;
+      margin-bottom: .4rem;
+    }
+    .field-wrap input,
+    .field-wrap textarea,
+    .field-wrap select {
+      background: #0f0a04;
+      border: 1px solid rgba(245,234,208,0.28);
+      border-radius: 2px;
+      color: var(--cream);
+      padding: .85rem 1rem;
+      font-family: var(--sans);
+      font-size: .9rem;
+      font-weight: 300;
+      width: 100%;
+      display: block;
+      transition: border-color .25s, box-shadow .25s;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .field-wrap select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23b8a88a' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 2.4rem;
+    }
+    .field-wrap textarea { resize: vertical; }
+    .field-wrap input:focus,
+    .field-wrap textarea:focus,
+    .field-wrap select:focus {
+      border-color: var(--rose);
+      box-shadow: 0 0 0 3px rgba(201,116,138,.12);
+    }
+    .field-wrap input.error,
+    .field-wrap textarea.error,
+    .field-wrap select.error {
+      border-color: #c94a4a;
+      box-shadow: 0 0 0 3px rgba(201,74,74,.10);
+    }
+
+    /* ── FLAVOUR CHECKBOXES ────────────────────────────── */
+    .flavour-group {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .7rem;
+      margin-top: .6rem;
+    }
+    .flavour-label {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: .75rem .5rem;
+      background: #0f0a04;
+      border: 1px solid rgba(245,234,208,0.22);
+      border-radius: 2px;
+      color: var(--cream-dim);
+      font-family: var(--sans);
+      font-size: .78rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: border-color .25s, color .25s, background .25s;
+      user-select: none;
+    }
+    .flavour-label input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .flavour-label:hover {
+      border-color: var(--rose);
+      color: var(--cream);
+    }
+    .flavour-label.checked {
+      border-color: var(--rose);
+      color: var(--cream);
+      background: rgba(201,116,138,.12);
+    }
+    .flavour-label.disabled {
+      opacity: .35;
+      cursor: not-allowed;
+    }
+    .flavour-label.disabled:hover {
+      border-color: rgba(245,234,208,0.22);
+      color: var(--cream-dim);
+    }
+    .flavour-count {
+      font-size: .65rem;
+      color: var(--cream-dim);
+      margin-top: .6rem;
+      letter-spacing: .1em;
+    }
+
+    /* ── SUBMIT BUTTON ─────────────────────────────────── */
+    .submit-btn {
+      width: 100%;
+      background: var(--rose);
+      color: var(--bg);
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      padding: 1.3rem;
+      border-radius: 2px;
+      border: none;
+      cursor: pointer;
+      margin-top: 2rem;
+      transition: background .3s, transform .3s;
+    }
+    .submit-btn:hover:not(:disabled) {
+      background: var(--rose-light);
+      transform: translateY(-2px);
+    }
+    .submit-btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    #form-error {
+      display: none;
+      margin-top: 1.2rem;
+      font-family: var(--sans);
+      font-size: .84rem;
+      color: var(--rose);
+      letter-spacing: .04em;
+    }
+
+    /* ── RIGHT PANEL ───────────────────────────────────── */
+    .brief-panel {
+      position: sticky;
+      top: 130px;
+      background: linear-gradient(160deg, #231911, #1c1409);
+      border: 1px solid rgba(245,234,208,.18);
+      border-radius: 2px;
+      padding: 2.5rem;
+    }
+    .panel-eyebrow {
+      font-size: .6rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 1rem;
+    }
+    .panel-title {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 2rem;
+      text-transform: uppercase;
+      letter-spacing: .02em;
+      line-height: 1.2;
+      padding-bottom: 1.4rem;
+      border-bottom: 1px solid rgba(245,234,208,.1);
+    }
+    .panel-list {
+      counter-reset: blist;
+    }
+    .panel-list li {
+      counter-increment: blist;
+      position: relative;
+      padding-left: 2.8rem;
+      margin-bottom: 1.6rem;
+      font-family: var(--sans);
+      font-size: .92rem;
+      color: var(--cream-dim);
+      line-height: 1.6;
+    }
+    .panel-list li::before {
+      content: "0" counter(blist);
+      position: absolute;
+      left: 0; top: 0;
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--rose);
+      font-weight: 500;
+    }
+    .panel-list li strong {
+      display: block;
+      color: var(--cream);
+      font-weight: 500;
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      font-style: italic;
+      margin-bottom: .25rem;
+    }
+
+    /* ── CONFIRMATION OVERLAY ──────────────────────────── */
+    #confirm-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: rgba(10,6,2,0.97);
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+    }
+    #confirm-overlay.visible { display: flex; }
+
+    #confirm-overlay img {
+      max-width: 160px;
+      height: auto;
+      margin-bottom: 2rem;
+    }
+    #confirm-overlay h2 {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 1rem;
+      max-width: 720px;
+    }
+    #confirm-overlay p {
+      font-family: var(--sans);
+      font-size: 1rem;
+      color: var(--cream-dim);
+      margin-bottom: 2.5rem;
+    }
+    #confirm-close {
+      background: var(--rose);
+      color: var(--bg);
+      font-family: var(--sans);
+      font-size: .8rem;
+      font-weight: 500;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      padding: 1rem 2.8rem;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      transition: background .3s, transform .3s;
+    }
+    #confirm-close:hover {
+      background: var(--rose-light);
+      transform: translateY(-2px);
+    }
+
+    /* ── FOOTER ────────────────────────────────────────── */
+    footer {
+      background: #0c0906;
+      padding: 6rem 4rem 2rem;
+      border-top: 1px solid rgba(201,116,138,.09);
+      position: relative;
+      z-index: 1;
+    }
+    .container { max-width: 1240px; margin: 0 auto; }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 4rem;
+      padding-bottom: 4.5rem;
+      border-bottom: 1px solid rgba(245,234,208,.07);
+    }
+    .ftagline {
+      margin-top: 1.6rem;
+      font-size: .83rem;
+      color: var(--cream-dim);
+      font-style: italic;
+      line-height: 1.75;
+    }
+    .fcol-head {
+      font-size: .6rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 1.5rem;
+    }
+    .fcol-links { display: flex; flex-direction: column; gap: .85rem; }
+    .fcol-links a { font-size: .84rem; color: var(--cream-dim); transition: color .25s; }
+    .fcol-links a:hover { color: var(--cream); }
+
+    .socials { display: flex; gap: .9rem; margin-top: .4rem; }
+    .socials a {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(245,234,208,.14);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--cream-dim);
+      transition: border-color .3s, color .3s, background .3s;
+    }
+    .socials a:hover {
+      border-color: var(--rose);
+      color: var(--rose);
+      background: rgba(201,116,138,.08);
+    }
+    .faddress { margin-top: 1.6rem; font-size: .8rem; color: var(--cream-dim); line-height: 1.8; }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 2rem;
+    }
+    .fcopy { font-size: .73rem; color: rgba(245,234,208,.28); letter-spacing: .07em; }
+    .flegal { display: flex; gap: 2rem; }
+    .flegal a { font-size: .73rem; color: rgba(245,234,208,.28); transition: color .25s; }
+    .flegal a:hover { color: var(--cream-dim); }
+
+    /* ── RESPONSIVE ────────────────────────────────────── */
+    @media (max-width: 960px) {
+      .brief-grid { grid-template-columns: 1fr; }
+      .brief-panel { position: static; }
+    }
+    @media (max-width: 820px) {
+      #brief-section { padding: 5rem 1.5rem; }
+      .nav { padding: 1.3rem 2rem; }
+      .nav.scrolled { padding: .9rem 2rem; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .flavour-group { grid-template-columns: repeat(2, 1fr); }
+      .footer-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      footer { padding: 4rem 2rem 2rem; }
+      .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
+      .flegal { justify-content: center; }
+    }
+    @media (max-width: 1100px) {
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 3rem; }
+    }
+    @media (max-width: 480px) {
+      .hero-title { font-size: clamp(2.4rem, 12vw, 3.5rem); }
+      .flavour-group { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     NAVIGATION
+════════════════════════════════════════════════════════ -->
+<nav class="nav" id="nav">
+  <a href="index.html" class="nav-logo">
+    <img src="Blossomlogo.png" alt="Blossom Breweries">
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#picks">Our Picks</a></li>
+    <li><a href="index.html#japanese-range">Japanese Range</a></li>
+    <li><a href="index.html#story">Our Story</a></li>
+    <li><a href="index.html#process">Process</a></li>
+    <li><a href="createadrink.html" class="active">Create a Drink</a></li>
+    <li><a href="menu.html">Menu</a></li>
+    <li><a href="order.html">Order</a></li>
+  </ul>
+  <button class="hamburger" id="ham" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mob-menu" id="mob">
+  <a href="index.html#picks"          class="mlink">Our Picks</a>
+  <a href="index.html#japanese-range" class="mlink">Japanese Range</a>
+  <a href="index.html#story"          class="mlink">Our Story</a>
+  <a href="index.html#process"        class="mlink">Process</a>
+  <a href="createadrink.html"         class="mlink">Create a Drink</a>
+  <a href="menu.html"                 class="mlink">Menu</a>
+  <a href="order.html"                class="mlink">Order</a>
+</div>
+
+<main>
+
+<!-- ═══════════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════════════ -->
+<section class="hero" id="hero">
+  <div class="hero-body">
+    <p class="hero-eyebrow">COMMISSIONED &nbsp;·&nbsp; BESPOKE &nbsp;·&nbsp; YOURS</p>
+    <h1 class="hero-title">
+      <span class="line"><span class="line-inner">Create a Drink</span></span>
+    </h1>
+    <p class="hero-sub">Your vision. Our craft. One perfect pour.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     BRIEF SECTION
+════════════════════════════════════════════════════════ -->
+<section id="brief-section" class="reveal">
+  <div class="brief-container">
+    <div class="brief-grid">
+
+      <!-- ── LEFT: FORM ─────────────────────────────────── -->
+      <div class="brief-form-col">
+        <p class="section-sub">The Brief</p>
+        <h2 class="section-title">Tell us what you're dreaming of.</h2>
+
+        <form id="brief-form" novalidate>
+
+          <div class="field-wrap">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" name="name" placeholder="Thomas Whitmore" required>
+          </div>
+
+          <div class="field-wrap">
+            <label for="discord">Discord Username</label>
+            <input type="text" id="discord" name="discord" placeholder="(( Discord Username ))" required>
+          </div>
+
+          <div class="field-wrap">
+            <label for="base-spirit">Base Spirit</label>
+            <select id="base-spirit" name="base-spirit" required>
+              <option value="" disabled selected>Choose a foundation</option>
+              <option value="Sake">Sake</option>
+              <option value="Whiskey">Whiskey</option>
+              <option value="Vodka">Vodka</option>
+              <option value="Gin">Gin</option>
+              <option value="Rum">Rum</option>
+              <option value="Tequila">Tequila</option>
+              <option value="Brandy">Brandy</option>
+              <option value="Beer">Beer</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="field-wrap">
+            <label>Flavour Profile (pick up to 3)</label>
+            <div class="flavour-group" id="flavour-group">
+              <label class="flavour-label"><input type="checkbox" name="flavour" value="Floral"><span>Floral</span></label>
+              <label class="flavour-label"><input type="checkbox" name="flavour" value="Citrus"><span>Citrus</span></label>
+              <label class="flavour-label"><input type="checkbox" name="flavour" value="Smoky"><span>Smoky</span></label>
+              <label class="flavour-label"><input type="checkbox" name="flavour" value="Sweet"><span>Sweet</span></label>
+              <label class="flavour-label"><input type="checkbox" name="flavour" value="Earthy"><span>Earthy</span></label>
+              <label class="flavour-label"><input type="checkbox" name="flavour" value="Spicy"><span>Spicy</span></label>
+              <label class="flavour-label"><input type="checkbox" name="flavour" value="Fruity"><span>Fruity</span></label>
+              <label class="flavour-label"><input type="checkbox" name="flavour" value="Bitter"><span>Bitter</span></label>
+              <label class="flavour-label"><input type="checkbox" name="flavour" value="Umami"><span>Umami</span></label>
+            </div>
+            <p class="flavour-count" id="flavour-count">0 of 3 selected</p>
+          </div>
+
+          <div class="field-wrap">
+            <label for="inspiration">Inspiration or Reference</label>
+            <textarea id="inspiration" name="inspiration" rows="4" placeholder="Tell us what you're imagining. A memory, a feeling, a flavour you can't name yet."></textarea>
+          </div>
+
+          <div class="field-wrap">
+            <label for="occasion">Occasion</label>
+            <input type="text" id="occasion" name="occasion" placeholder="A celebration? A signature serve? Something personal?">
+          </div>
+
+          <p id="form-error">Something went wrong. Please try again.</p>
+          <button type="submit" class="submit-btn">SEND THE BRIEF</button>
+
+        </form>
+      </div>
+
+      <!-- ── RIGHT: INFO PANEL ──────────────────────────── -->
+      <aside class="brief-panel" aria-label="What makes a Blossom drink">
+        <p class="panel-eyebrow">The Principles</p>
+        <h3 class="panel-title">What Makes A Blossom Drink</h3>
+        <ol class="panel-list">
+          <li><strong>It starts with the base.</strong> The spirit sets the soul of the drink.</li>
+          <li><strong>It earns its garnish.</strong> Nothing decorative that doesn't earn its place.</li>
+          <li><strong>It respects the season.</strong> Ingredients are chosen by what is at its peak.</li>
+          <li><strong>It tells a story.</strong> Every Blossom creation has a name and a reason.</li>
+        </ol>
+      </aside>
+
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <img src="Blossomlogo.png" alt="Blossom Breweries" style="max-height:140px;display:block;margin-bottom:1.2rem;">
+        <p class="ftagline">"Brewed with Nature.<br>Bottled with Soul."</p>
+      </div>
+      <div>
+        <p class="fcol-head">Products</p>
+        <ul class="fcol-links">
+          <li><a href="index.html#beers">Harvest Gold Ale</a></li>
+          <li><a href="index.html#beers">Midnight Porter</a></li>
+          <li><a href="index.html#beers">Meadow Lager</a></li>
+          <li><a href="index.html#beers">Blossom Rose Cider</a></li>
+          <li><a href="index.html#seasonal">Seasonal Releases</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="fcol-head">Visit</p>
+        <ul class="fcol-links">
+          <li><a href="index.html#taproom">The Taproom</a></li>
+          <li><a href="index.html#taproom">Opening Hours</a></li>
+          <li><a href="index.html#stockists">Find a Stockist</a></li>
+          <li><a href="#">Tours &amp; Events</a></li>
+          <li><a href="#">Press Enquiries</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="fcol-head">Follow Us</p>
+        <div class="socials">
+          <a href="#" aria-label="Instagram">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5"/>
+              <circle cx="12" cy="12" r="4.5"/>
+              <circle cx="17.5" cy="6.5" r=".9" fill="currentColor" stroke="none"/>
+            </svg>
+          </a>
+          <a href="#" aria-label="Facebook">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+            </svg>
+          </a>
+          <a href="#" aria-label="X">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+          </a>
+        </div>
+        <p class="faddress">The Blossom House<br>Rockford Hills<br>Los Santos, San Andreas</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="fcopy">© 2025 Blossom Breweries Ltd. Los Santos, San Andreas. All rights reserved.</p>
+      <div class="flegal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+        <a href="#">Cookie Preferences</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════
+     CONFIRMATION OVERLAY
+════════════════════════════════════════════════════════ -->
+<div id="confirm-overlay" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+  <img src="Blossomlogo.png" alt="Blossom Breweries">
+  <h2 id="confirm-title"></h2>
+  <p>Sakura will be in touch on Discord.</p>
+  <button id="confirm-close">Dismiss</button>
+</div>
+
+<script>
+  // ── NAV SCROLL ────────────────────────────────────────
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 70);
+  }, { passive: true });
+
+  // ── HAMBURGER ─────────────────────────────────────────
+  const ham = document.getElementById('ham');
+  const mob = document.getElementById('mob');
+  ham.addEventListener('click', () => {
+    const open = mob.classList.toggle('open');
+    ham.classList.toggle('open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+  document.querySelectorAll('.mlink').forEach(a => {
+    a.addEventListener('click', () => {
+      mob.classList.remove('open');
+      ham.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+
+  // ── REVEAL OBSERVER ───────────────────────────────────
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+  // ── FLAVOUR CHECKBOXES (max 3) ────────────────────────
+  const flavourGroup = document.getElementById('flavour-group');
+  const flavourCount = document.getElementById('flavour-count');
+  const MAX_FLAVOURS = 3;
+
+  function refreshFlavours() {
+    const labels = flavourGroup.querySelectorAll('.flavour-label');
+    const checked = flavourGroup.querySelectorAll('input[type="checkbox"]:checked');
+    const count = checked.length;
+
+    labels.forEach(l => {
+      const input = l.querySelector('input');
+      if (input.checked) {
+        l.classList.add('checked');
+        l.classList.remove('disabled');
+      } else {
+        l.classList.remove('checked');
+        if (count >= MAX_FLAVOURS) {
+          l.classList.add('disabled');
+        } else {
+          l.classList.remove('disabled');
+        }
+      }
+    });
+
+    flavourCount.textContent = count + ' of ' + MAX_FLAVOURS + ' selected';
+  }
+
+  flavourGroup.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', (e) => {
+      const checked = flavourGroup.querySelectorAll('input[type="checkbox"]:checked');
+      if (checked.length > MAX_FLAVOURS) {
+        e.target.checked = false;
+      }
+      refreshFlavours();
+    });
+  });
+
+  // Prevent clicking disabled labels from toggling
+  flavourGroup.querySelectorAll('.flavour-label').forEach(l => {
+    l.addEventListener('click', (e) => {
+      if (l.classList.contains('disabled')) {
+        e.preventDefault();
+      }
+    });
+  });
+
+  refreshFlavours();
+
+  // ── FORM VALIDATION & SUBMIT ──────────────────────────
+  const form           = document.getElementById('brief-form');
+  const formError      = document.getElementById('form-error');
+  const confirmOverlay = document.getElementById('confirm-overlay');
+  const confirmTitle   = document.getElementById('confirm-title');
+  const confirmClose   = document.getElementById('confirm-close');
+
+  const ENDPOINT = 'http://localhost:3000/new-drink';
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    formError.style.display = 'none';
+
+    const nameEl    = document.getElementById('name');
+    const discordEl = document.getElementById('discord');
+    const spiritEl  = document.getElementById('base-spirit');
+
+    const name       = nameEl.value.trim();
+    const discord    = discordEl.value.trim();
+    const spirit     = spiritEl.value;
+    const inspiration = document.getElementById('inspiration').value.trim();
+    const occasion    = document.getElementById('occasion').value.trim();
+
+    const flavours = Array.from(
+      flavourGroup.querySelectorAll('input[type="checkbox"]:checked')
+    ).map(cb => cb.value);
+
+    // Validate
+    let valid = true;
+    [nameEl, discordEl, spiritEl].forEach(el => el.classList.remove('error'));
+
+    if (!name)    { nameEl.classList.add('error'); valid = false; }
+    if (!discord) { discordEl.classList.add('error'); valid = false; }
+    if (!spirit)  { spiritEl.classList.add('error'); valid = false; }
+    if (flavours.length < 1) {
+      formError.textContent = 'Please pick at least one flavour.';
+      formError.style.display = 'block';
+      valid = false;
+    }
+
+    if (!valid) {
+      const firstErr = form.querySelector('.error');
+      if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    const submitBtn = form.querySelector('.submit-btn');
+    submitBtn.disabled    = true;
+    submitBtn.textContent = 'SENDING...';
+
+    const payload = {
+      name,
+      discordUsername: discord,
+      baseSpirit: spirit,
+      flavourProfile: flavours,
+      inspiration,
+      occasion,
+    };
+
+    try {
+      const res  = await fetch(ENDPOINT, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload),
+      });
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        confirmTitle.textContent = "We've received your brief, " + name + ".";
+        confirmOverlay.classList.add('visible');
+        document.body.style.overflow = 'hidden';
+      } else {
+        throw new Error(data.error || ('Server responded with status ' + res.status));
+      }
+    } catch (err) {
+      formError.textContent = 'Something went wrong. Please try again.';
+      formError.style.display = 'block';
+    } finally {
+      submitBtn.disabled    = false;
+      submitBtn.textContent = 'SEND THE BRIEF';
+    }
+  });
+
+  // Clear error on input
+  ['name','discord','base-spirit'].forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener('input',  () => el.classList.remove('error'));
+    el.addEventListener('change', () => el.classList.remove('error'));
+  });
+
+  confirmClose.addEventListener('click', () => {
+    confirmOverlay.classList.remove('visible');
+    document.body.style.overflow = '';
+    form.reset();
+    flavourGroup.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+    refreshFlavours();
+    formError.style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+</body>
+</html>

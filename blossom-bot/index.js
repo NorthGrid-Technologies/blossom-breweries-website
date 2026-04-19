@@ -26,7 +26,8 @@ const client = new Client({
   ],
 });
 
-// ── Order store: messageId → orderData ───────────────────
+// ── Order store: messageId → { type, data } ──────────────
+// type: 'order' | 'drink-brief'
 const orderStore = new Map();
 
 // ── Outbound webhook clients ──────────────────────────────
@@ -99,6 +100,22 @@ function buildEmbedFields(order) {
   ];
 }
 
+// ── Build Discord embed fields from a drink-brief object ──
+function buildDrinkBriefFields(brief) {
+  const flavours = Array.isArray(brief.flavourProfile)
+    ? brief.flavourProfile.join(', ')
+    : (brief.flavourProfile || '');
+
+  return [
+    { name: '👤 Name',            value: String(brief.name || 'Unknown'),          inline: true  },
+    { name: '💬 Discord',          value: String(brief.discordUsername || ''),     inline: true  },
+    { name: '🥃 Base Spirit',     value: String(brief.baseSpirit || 'Not specified'), inline: false },
+    { name: '🌸 Flavour Profile', value: flavours || 'None',                        inline: false },
+    { name: '✨ Inspiration',     value: String(brief.inspiration || 'Not specified'), inline: false },
+    { name: '🎯 Occasion',        value: String(brief.occasion    || 'Not specified'), inline: false },
+  ];
+}
+
 // ── Reconstruct a minimal order object from an embed ──────
 // Used when restoring orders from channel history on startup.
 function reconstructFromEmbed(embed) {
@@ -125,6 +142,26 @@ function reconstructFromEmbed(embed) {
   };
 }
 
+// ── Reconstruct a drink-brief object from an embed ────────
+function reconstructDrinkBriefFromEmbed(embed) {
+  const f = {};
+  (embed.fields || []).forEach(field => { f[field.name] = field.value; });
+
+  const flavoursRaw = f['🌸 Flavour Profile'] || '';
+  const flavourProfile = flavoursRaw && flavoursRaw !== 'None'
+    ? flavoursRaw.split(',').map(s => s.trim()).filter(Boolean)
+    : [];
+
+  return {
+    name:            f['👤 Name']            || 'Unknown',
+    discordUsername: f['💬 Discord']          || '',
+    baseSpirit:      f['🥃 Base Spirit']     || '',
+    flavourProfile,
+    inspiration:     f['✨ Inspiration']     || '',
+    occasion:        f['🎯 Occasion']        || '',
+  };
+}
+
 // ── Build a complete embed from an order + title + color ──
 function buildEmbed(title, color, order, extraField = null) {
   const embed = new EmbedBuilder()
@@ -132,6 +169,19 @@ function buildEmbed(title, color, order, extraField = null) {
     .setColor(color)
     .addFields(...buildEmbedFields(order))
     .setFooter({ text: 'Blossom Breweries · Los Santos, San Andreas' })
+    .setTimestamp();
+
+  if (extraField) embed.addFields(extraField);
+  return embed;
+}
+
+// ── Build a complete embed from a drink brief ─────────────
+function buildDrinkBriefEmbed(title, color, brief, extraField = null) {
+  const embed = new EmbedBuilder()
+    .setTitle(title)
+    .setColor(color)
+    .addFields(...buildDrinkBriefFields(brief))
+    .setFooter({ text: 'Blossom Breweries · Create a Drink' })
     .setTimestamp();
 
   if (extraField) embed.addFields(extraField);
@@ -147,19 +197,32 @@ client.once('ready', async () => {
     newOrdersChannelId = info.channel_id;
     log(`New-orders channel resolved: ${newOrdersChannelId}`);
 
-    // Restore pending orders from the last 50 channel messages
+    // Restore pending orders/briefs from the last 50 channel messages
     const channel  = await client.channels.fetch(newOrdersChannelId);
     const messages = await channel.messages.fetch({ limit: 50 });
     let restored = 0;
 
     messages.forEach(msg => {
-      if (msg.author.id === client.user.id && msg.embeds.length > 0) {
-        orderStore.set(msg.id, reconstructFromEmbed(msg.embeds[0]));
+      if (msg.author.id !== client.user.id || msg.embeds.length === 0) return;
+      const embed = msg.embeds[0];
+      const title = embed.title || '';
+
+      if (title.startsWith('🍹')) {
+        orderStore.set(msg.id, {
+          type: 'drink-brief',
+          data: reconstructDrinkBriefFromEmbed(embed),
+        });
+        restored++;
+      } else if (title.startsWith('🍺')) {
+        orderStore.set(msg.id, {
+          type: 'order',
+          data: reconstructFromEmbed(embed),
+        });
         restored++;
       }
     });
 
-    log(`Restored ${restored} pending order(s) from channel history`);
+    log(`Restored ${restored} pending item(s) from channel history`);
   } catch (err) {
     log(`ERROR during startup restore: ${err.message}`);
   }
@@ -181,26 +244,47 @@ client.on('messageReactionAdd', async (reaction, user) => {
     const messageId = reaction.message.id;
 
     if (emoji !== '✅' && emoji !== '❌')  return;
-    if (!orderStore.has(messageId))         return;
 
-    const order    = orderStore.get(messageId);
+    const entry = orderStore.get(messageId);
+    if (!entry) return;
+    const { type, data } = entry;
     const username = user.tag ?? user.username;
 
-    // ── Complete ──────────────────────────────────────────
-    if (emoji === '✅') {
-      const embed = buildEmbed('✅ Order Completed', 0x57F287, order, {
-        name: 'Completed By', value: username, inline: false,
-      });
-      await completedWebhook.send({ embeds: [embed] });
-      log(`Order ${messageId} marked as COMPLETED by ${username}`);
+    if (type === 'order') {
+      // ── Complete ──────────────────────────────────────────
+      if (emoji === '✅') {
+        const embed = buildEmbed('✅ Order Completed', 0x57F287, data, {
+          name: 'Completed By', value: username, inline: false,
+        });
+        await completedWebhook.send({ embeds: [embed] });
+        log(`Order ${messageId} marked as COMPLETED by ${username}`);
 
-    // ── Cancel ────────────────────────────────────────────
-    } else {
-      const embed = buildEmbed('❌ Order Cancelled', 0xED4245, order, {
-        name: 'Cancelled By', value: username, inline: false,
-      });
-      await cancelledWebhook.send({ embeds: [embed] });
-      log(`Order ${messageId} marked as CANCELLED by ${username}`);
+      // ── Cancel ────────────────────────────────────────────
+      } else {
+        const embed = buildEmbed('❌ Order Cancelled', 0xED4245, data, {
+          name: 'Cancelled By', value: username, inline: false,
+        });
+        await cancelledWebhook.send({ embeds: [embed] });
+        log(`Order ${messageId} marked as CANCELLED by ${username}`);
+      }
+
+    } else if (type === 'drink-brief') {
+      // ── Approve ───────────────────────────────────────────
+      if (emoji === '✅') {
+        const embed = buildDrinkBriefEmbed('✅ Drink Brief Approved', 0x57F287, data, {
+          name: 'Handled By', value: username, inline: false,
+        });
+        await completedWebhook.send({ embeds: [embed] });
+        log(`Drink brief ${messageId} APPROVED by ${username}`);
+
+      // ── Decline ───────────────────────────────────────────
+      } else {
+        const embed = buildDrinkBriefEmbed('❌ Drink Brief Declined', 0xED4245, data, {
+          name: 'Handled By', value: username, inline: false,
+        });
+        await cancelledWebhook.send({ embeds: [embed] });
+        log(`Drink brief ${messageId} DECLINED by ${username}`);
+      }
     }
 
     // Delete original #new-orders message
@@ -244,13 +328,16 @@ function startHttpServer() {
         const channel = await client.channels.fetch(newOrdersChannelId);
         const embed   = buildEmbed('🍺 New Blossom Breweries Order', 0xCB6F87, order);
 
+        // TODO: Add Discord ping here — replace DISCORD_USER_ID with your actual ID
+        // Example: await channel.send({ content: "<@DISCORD_USER_ID>", embeds: [embed] });
+        // Add "content" as a top-level field alongside "embeds" in the channel.send payload.
         const message = await channel.send({ embeds: [embed] });
 
         // Add reaction controls for staff
         await message.react('✅');
         await message.react('❌');
 
-        orderStore.set(message.id, order);
+        orderStore.set(message.id, { type: 'order', data: order });
         log(`New order — ID: ${message.id} — customer: ${order.customerName}`);
 
         res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -258,6 +345,39 @@ function startHttpServer() {
 
       } catch (err) {
         log(`ERROR handling /new-order: ${err.message}`);
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+      return;
+    }
+
+    if (req.method === 'POST' && req.url === '/new-drink') {
+      try {
+        if (!newOrdersChannelId) {
+          throw new Error('Bot not fully ready — channel ID not yet resolved');
+        }
+
+        const brief   = await readBody(req);
+        const channel = await client.channels.fetch(newOrdersChannelId);
+        const embed   = buildDrinkBriefEmbed('🍹 New Drink Creation Brief', 0xCB6F87, brief);
+
+        // TODO: Add Discord ping here — replace DISCORD_USER_ID with your actual ID
+        // Example: await channel.send({ content: "<@DISCORD_USER_ID>", embeds: [embed] });
+        // Add "content" as a top-level field alongside "embeds" in the channel.send payload.
+        const message = await channel.send({ embeds: [embed] });
+
+        // Add reaction controls for staff
+        await message.react('✅');
+        await message.react('❌');
+
+        orderStore.set(message.id, { type: 'drink-brief', data: brief });
+        log(`New drink brief — ID: ${message.id} — name: ${brief.name}`);
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, messageId: message.id }));
+
+      } catch (err) {
+        log(`ERROR handling /new-drink: ${err.message}`);
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: false, error: err.message }));
       }

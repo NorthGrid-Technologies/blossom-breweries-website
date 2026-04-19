@@ -521,6 +521,33 @@
       vertical-align: middle;
     }
     .premium-price { color: var(--gold-light, #d4aa6a) !important; }
+
+    /* ── CRAFT SELECTION (FEATURED) ────────────────────── */
+    .craft-selection {
+      margin-bottom: 3.5rem;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px solid rgba(245,234,208,.08);
+    }
+    .craft-heading {
+      font-family: var(--serif);
+      font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--cream);
+      text-align: center;
+      margin-bottom: .6rem;
+    }
+    .craft-sub {
+      font-family: var(--sans);
+      font-size: .72rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--rose);
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .craft-rows { display: flex; flex-direction: column; gap: 1rem; }
   </style>
 </head>
 <body>
@@ -533,12 +560,11 @@
     <img src="Blossomlogo.png" alt="Blossom Breweries">
   </a>
   <ul class="nav-links">
-    <li><a href="index.html#beers">Our Beers</a></li>
+    <li><a href="index.html#picks">Our Picks</a></li>
     <li><a href="index.html#japanese-range">Japanese Range</a></li>
     <li><a href="index.html#story">Our Story</a></li>
-    <li><a href="index.html#taproom">Taproom</a></li>
-    <li><a href="index.html#seasonal">Seasonal</a></li>
-    <li><a href="index.html#stockists">Visit Us</a></li>
+    <li><a href="index.html#process">Process</a></li>
+    <li><a href="createadrink.html">Create a Drink</a></li>
     <li><a href="menu.html" class="active-page">Menu</a></li>
     <li><a href="order.html">Order</a></li>
   </ul>
@@ -548,12 +574,11 @@
 </nav>
 
 <div class="mob-menu" id="mob">
-  <a href="index.html#beers"          class="mlink">Our Beers</a>
+  <a href="index.html#picks"          class="mlink">Our Picks</a>
   <a href="index.html#japanese-range" class="mlink">Japanese Range</a>
   <a href="index.html#story"          class="mlink">Our Story</a>
-  <a href="index.html#taproom"        class="mlink">Taproom</a>
-  <a href="index.html#seasonal"       class="mlink">Seasonal</a>
-  <a href="index.html#stockists"      class="mlink">Visit Us</a>
+  <a href="index.html#process"        class="mlink">Process</a>
+  <a href="createadrink.html"         class="mlink">Create a Drink</a>
   <a href="menu.html"                 class="mlink">Menu</a>
   <a href="order.html"                class="mlink">Order</a>
 </div>
@@ -578,6 +603,22 @@
 ════════════════════════════════════════════════════════ -->
 <section class="menu-section" id="menu">
   <div class="container">
+
+    <!-- CRAFT SELECTION (FEATURED) -->
+    <div class="craft-selection reveal">
+      <h2 class="craft-heading">Craft Selection</h2>
+      <p class="craft-sub">Blossom's signature tier.</p>
+      <div class="craft-rows">
+        <div class="menu-row premium-row">
+          <span class="menu-name">Professional Craft Beer <span class="premium-badge">PREMIUM</span><br><span class="menu-desc">Rotating selection of premium craft beers, curated by Sakura personally.</span></span>
+          <span class="menu-price premium-price">$60</span>
+        </div>
+        <div class="menu-row premium-row">
+          <span class="menu-name">Professional Craft Liquor <span class="premium-badge">PREMIUM</span><br><span class="menu-desc">Premium and rare spirits, selected directly from Sakura's private collection.</span></span>
+          <span class="menu-price premium-price">$80</span>
+        </div>
+      </div>
+    </div>
 
     <!-- TAB BAR -->
     <div class="tab-bar reveal" role="tablist" aria-label="Menu categories">
@@ -666,10 +707,11 @@
         <span class="menu-name">Budweiser</span>
         <span class="menu-price">$45</span>
       </div>
+      <hr class="menu-divider">
 
-      <div class="menu-row premium-row">
-        <span class="menu-name">Professional Craft Beer <span class="premium-badge">PREMIUM</span><br><span class="menu-desc">Rotating selection of premium craft beers, curated by Sakura personally.</span></span>
-        <span class="menu-price premium-price">$60</span>
+      <div class="menu-row">
+        <span class="menu-name">Corona</span>
+        <span class="menu-price">$45</span>
       </div>
 
     </div><!-- /tab-beers -->
@@ -914,13 +956,13 @@
 
       <div class="menu-row">
         <span class="menu-name">Yamazaki 12 Whiskey</span>
-        <span class="menu-price">$60</span>
+        <span class="menu-price">$120</span>
       </div>
       <hr class="menu-divider">
 
       <div class="menu-row">
         <span class="menu-name">Yamazaki 25 Whiskey</span>
-        <span class="menu-price">$60</span>
+        <span class="menu-price">$180</span>
       </div>
 
       <p class="menu-subhead">Rum</p>
@@ -976,11 +1018,6 @@
       <div class="menu-row">
         <span class="menu-name">Ryoma 7 Years Rum</span>
         <span class="menu-price">$60</span>
-      </div>
-
-      <div class="menu-row premium-row">
-        <span class="menu-name">Professional Craft Liquor <span class="premium-badge">PREMIUM</span><br><span class="menu-desc">Premium and rare spirits, selected directly from Sakura's private collection.</span></span>
-        <span class="menu-price premium-price">$80</span>
       </div>
 
     </div><!-- /tab-liquors -->

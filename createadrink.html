@@ -423,6 +423,69 @@
       letter-spacing: .04em;
     }
 
+    /* ── ORDER SECTION ────────────────────────────────── */
+    .order-section {
+      margin-bottom: 2rem;
+      padding: 1.6rem;
+      border: 1px solid rgba(201,116,138,.22);
+      border-radius: 2px;
+      background: rgba(201,116,138,.04);
+    }
+    .order-heading {
+      font-family: var(--sans);
+      font-size: .62rem;
+      letter-spacing: .32em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 1.2rem;
+    }
+    .order-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .order-label {
+      display: flex;
+      flex-direction: column;
+      gap: .2rem;
+    }
+    .order-label > span:first-child {
+      font-family: var(--sans);
+      font-size: .9rem;
+      color: var(--cream);
+    }
+    .order-sublabel {
+      font-family: var(--sans);
+      font-size: .72rem;
+      color: rgba(245,234,208,.5);
+      letter-spacing: .04em;
+    }
+    .qty-spin {
+      width: 80px;
+      padding: .5rem .6rem;
+      background: rgba(245,234,208,.06);
+      border: 1px solid rgba(245,234,208,.18);
+      border-radius: 2px;
+      color: var(--cream);
+      font-family: var(--sans);
+      font-size: 1rem;
+      text-align: center;
+      transition: border-color .25s;
+    }
+    .qty-spin:focus {
+      outline: none;
+      border-color: var(--rose);
+    }
+    .order-total {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      color: var(--cream);
+      margin-top: .8rem;
+      min-height: 1.8rem;
+    }
+
     /* ── RIGHT PANEL ───────────────────────────────────── */
     .brief-panel {
       position: sticky;
@@ -738,6 +801,26 @@
             <input type="text" id="occasion" name="occasion" placeholder="A celebration? A signature serve? Something personal?">
           </div>
 
+          <!-- YOUR ORDER -->
+          <div class="order-section">
+            <p class="order-heading">YOUR ORDER</p>
+            <div class="order-row">
+              <div class="order-label">
+                <span>Beers &amp; Beverages</span>
+                <span class="order-sublabel">$100 per</span>
+              </div>
+              <input type="number" id="beers-qty" class="qty-spin" min="0" max="999" value="0">
+            </div>
+            <div class="order-row">
+              <div class="order-label">
+                <span>Liquor</span>
+                <span class="order-sublabel">$200 per</span>
+              </div>
+              <input type="number" id="liquor-qty" class="qty-spin" min="0" max="999" value="0">
+            </div>
+            <p id="order-total" class="order-total" aria-live="polite"></p>
+          </div>
+
           <p id="form-error">Something went wrong. Please try again.</p>
           <button type="submit" class="submit-btn">SEND THE BRIEF</button>
 
@@ -942,6 +1025,9 @@
     const spirit     = spiritEl.value;
     const inspiration = document.getElementById('inspiration').value.trim();
     const occasion    = document.getElementById('occasion').value.trim();
+    const beersQty    = parseInt(document.getElementById('beers-qty').value, 10) || 0;
+    const liquorQty   = parseInt(document.getElementById('liquor-qty').value, 10) || 0;
+    const estimatedTotal = beersQty * 100 + liquorQty * 200;
 
     const flavours = Array.from(
       flavourGroup.querySelectorAll('input[type="checkbox"]:checked')
@@ -977,6 +1063,9 @@
       flavourProfile: flavours,
       inspiration,
       occasion,
+      beersQty,
+      liquorQty,
+      estimatedTotal,
     };
 
     try {
@@ -1009,6 +1098,21 @@
     el.addEventListener('input',  () => el.classList.remove('error'));
     el.addEventListener('change', () => el.classList.remove('error'));
   });
+
+  // ── Live order total ──────────────────────────────────────
+  const beersInput  = document.getElementById('beers-qty');
+  const liquorInput = document.getElementById('liquor-qty');
+  const orderTotal  = document.getElementById('order-total');
+
+  function updateTotal() {
+    const b = parseInt(beersInput.value, 10) || 0;
+    const l = parseInt(liquorInput.value, 10) || 0;
+    const t = b * 100 + l * 200;
+    orderTotal.textContent = t > 0 ? `Estimated Total: $${t.toFixed(2)}` : 'Select quantities above';
+  }
+  beersInput.addEventListener('input', updateTotal);
+  liquorInput.addEventListener('input', updateTotal);
+  updateTotal();
 
   confirmClose.addEventListener('click', () => {
     confirmOverlay.classList.remove('visible');

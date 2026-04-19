@@ -113,6 +113,9 @@ function buildDrinkBriefFields(brief) {
     { name: '🌸 Flavour Profile', value: flavours || 'None',                        inline: false },
     { name: '✨ Inspiration',     value: String(brief.inspiration || 'Not specified'), inline: false },
     { name: '🎯 Occasion',        value: String(brief.occasion    || 'Not specified'), inline: false },
+    { name: '🍺 Beers & Beverages', value: `${brief.beersQty ?? 0} × $100 = $${((brief.beersQty ?? 0) * 100).toFixed(2)}`, inline: true },
+    { name: '🥃 Liquor',           value: `${brief.liquorQty ?? 0} × $200 = $${((brief.liquorQty ?? 0) * 200).toFixed(2)}`, inline: true },
+    { name: '💰 Estimated Total',  value: `$${((brief.beersQty ?? 0) * 100 + (brief.liquorQty ?? 0) * 200).toFixed(2)}`, inline: true },
   ];
 }
 

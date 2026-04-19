@@ -484,6 +484,43 @@
     @media (max-width: 400px) {
       .row-price { font-size: .72rem; }
     }
+
+    /* ── MENU SUBHEADINGS ────────────────────────────── */
+    .menu-subhead {
+      font-family: var(--sans);
+      font-size: .6rem;
+      letter-spacing: .32em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin: 2rem 0 .6rem;
+      padding-bottom: .4rem;
+      border-bottom: 1px solid rgba(201,116,138,.18);
+    }
+    .menu-subhead:first-child { margin-top: 0; }
+
+    /* ── PREMIUM ROW ─────────────────────────────────── */
+    .premium-row {
+      border: 1px solid rgba(184,146,74,.35);
+      border-radius: 2px;
+      padding: 1.2rem 1rem;
+      margin-top: 1.5rem;
+      background: linear-gradient(135deg, rgba(184,146,74,.06), transparent);
+    }
+    .premium-row .menu-name { color: var(--gold-light, #d4aa6a); }
+    .premium-badge {
+      display: inline-block;
+      font-family: var(--sans);
+      font-size: .55rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--gold, #b8924a);
+      padding: .18rem .55rem;
+      border-radius: 100px;
+      margin-left: .6rem;
+      vertical-align: middle;
+    }
+    .premium-price { color: var(--gold-light, #d4aa6a) !important; }
   </style>
 </head>
 <body>
@@ -544,175 +581,541 @@
 
     <!-- TAB BAR -->
     <div class="tab-bar reveal" role="tablist" aria-label="Menu categories">
-      <button class="tab-btn tab-active" role="tab" aria-selected="true"  aria-controls="panel-ales"    data-panel="panel-ales">Ales &amp; Lagers</button>
-      <button class="tab-btn"            role="tab" aria-selected="false" aria-controls="panel-japanese" data-panel="panel-japanese">Japanese Range</button>
-      <button class="tab-btn"            role="tab" aria-selected="false" aria-controls="panel-cider"    data-panel="panel-cider">Cider &amp; Wine</button>
-      <button class="tab-btn"            role="tab" aria-selected="false" aria-controls="panel-canned"   data-panel="panel-canned">Canned &amp; RTD</button>
+      <button class="tab-btn tab-active" data-panel="tab-beers">Beers</button>
+      <button class="tab-btn" data-panel="tab-liquors">Liquors</button>
+      <button class="tab-btn" data-panel="tab-sake">Sake &amp; Wine</button>
+      <button class="tab-btn" data-panel="tab-canned">Canned &amp; RTD</button>
     </div>
 
-    <!-- ── PANEL 1: ALES & LAGERS ── -->
-    <div class="menu-panel panel-active reveal" id="panel-ales" role="tabpanel">
+    <!-- ── PANEL 1: BEERS ── -->
+    <div class="menu-panel panel-active reveal" id="tab-beers">
 
       <div class="menu-row">
-        <span class="row-name">Harvest Gold Ale</span>
-        <span class="row-desc">Golden ale kissed by wildflower honey</span>
-        <span class="beer-abv">4.6% ABV</span>
-        <span class="row-price">£5.50/pint · £18/case</span>
+        <span class="menu-name">Dusche Beer</span>
+        <span class="menu-price">$45</span>
       </div>
+      <hr class="menu-divider">
 
       <div class="menu-row">
-        <span class="row-name">Midnight Porter</span>
-        <span class="row-desc">Dark as a winter field, rich as oak smoke</span>
-        <span class="beer-abv">5.8% ABV</span>
-        <span class="row-price">£6.00/pint · £22/case</span>
+        <span class="menu-name">Barracho Beer</span>
+        <span class="menu-price">$45</span>
       </div>
+      <hr class="menu-divider">
 
       <div class="menu-row">
-        <span class="row-name">Meadow Lager</span>
-        <span class="row-desc">Crisp, light, and effortlessly refreshing</span>
-        <span class="beer-abv">4.2% ABV</span>
-        <span class="row-price">£5.00/pint · £16/case</span>
+        <span class="menu-name">Blarneys Beer</span>
+        <span class="menu-price">$45</span>
       </div>
+      <hr class="menu-divider">
 
       <div class="menu-row">
-        <span class="row-name">Pale Bloom IPA</span>
-        <span class="row-desc">Citrus-forward with a resinous finish. Bold hops, smooth landing</span>
-        <span class="beer-abv">6.1% ABV</span>
-        <span class="row-price">£6.50/pint · £24/case</span>
+        <span class="menu-name">Jakeys Beer</span>
+        <span class="menu-price">$45</span>
       </div>
+      <hr class="menu-divider">
 
       <div class="menu-row">
-        <span class="row-name">Amber Harvest</span>
-        <span class="row-desc">A malt-forward amber ale with notes of toffee and toasted bread</span>
-        <span class="beer-abv">4.9% ABV</span>
-        <span class="row-price">£5.75/pint · £20/case</span>
+        <span class="menu-name">Patrior Beer</span>
+        <span class="menu-price">$45</span>
       </div>
-
-    </div><!-- /panel-ales -->
-
-    <!-- ── PANEL 2: JAPANESE RANGE ── -->
-    <div class="menu-panel" id="panel-japanese" role="tabpanel">
+      <hr class="menu-divider">
 
       <div class="menu-row">
-        <span class="row-name">Sakura Sake</span>
-        <span class="row-desc">Junmai sake, cherry blossom yeast</span>
-        <span class="beer-abv">15.2% ABV</span>
-        <span class="row-price">£12/glass · £45/bottle</span>
+        <span class="menu-name">Pride Beer</span>
+        <span class="menu-price">$45</span>
       </div>
+      <hr class="menu-divider">
 
       <div class="menu-row">
-        <span class="row-name">Yuzu Lager</span>
-        <span class="row-desc">Light lager with yuzu citrus peel</span>
-        <span class="beer-abv">4.8% ABV</span>
-        <span class="row-price">£5.50/pint · £18/case</span>
+        <span class="menu-name">Logger Beer</span>
+        <span class="menu-price">$45</span>
       </div>
+      <hr class="menu-divider">
 
       <div class="menu-row">
-        <span class="row-name">Matcha Wit</span>
-        <span class="row-desc">Witbier with ceremonial matcha</span>
-        <span class="beer-abv">5.1% ABV</span>
-        <span class="row-price">£6.00/pint · £20/case</span>
+        <span class="menu-name">Pisshwasser Beer</span>
+        <span class="menu-price">$45</span>
       </div>
+      <hr class="menu-divider">
 
       <div class="menu-row">
-        <span class="row-name">Umeshu Plum Wine</span>
-        <span class="row-desc">Traditional ume plum liqueur, 6-month steep</span>
-        <span class="beer-abv">12.0% ABV</span>
-        <span class="row-price">£10/glass · £38/bottle</span>
+        <span class="menu-name">Stronzo Beer</span>
+        <span class="menu-price">$45</span>
       </div>
+      <hr class="menu-divider">
 
       <div class="menu-row">
-        <span class="row-name">Shochu Highball</span>
-        <span class="row-desc">Barley shochu, sparkling water, lemon</span>
-        <span class="beer-abv">7.0% ABV</span>
-        <span class="row-price">£4.50/can · £52/24-pack</span>
+        <span class="menu-name">Asahi Beer</span>
+        <span class="menu-price">$45</span>
       </div>
+      <hr class="menu-divider">
 
       <div class="menu-row">
-        <span class="row-name">Shiso Gin &amp; Tonic</span>
-        <span class="row-desc">House gin with Japanese shiso leaf</span>
-        <span class="beer-abv">6.0% ABV</span>
-        <span class="row-price">£4.50/can · £52/24-pack</span>
+        <span class="menu-name">Kirin Beer</span>
+        <span class="menu-price">$45</span>
       </div>
-
-    </div><!-- /panel-japanese -->
-
-    <!-- ── PANEL 3: CIDER & WINE ── -->
-    <div class="menu-panel" id="panel-cider" role="tabpanel">
+      <hr class="menu-divider">
 
       <div class="menu-row">
-        <span class="row-name">Blossom Rose Cider</span>
-        <span class="row-desc">Heritage apples, pressed by hand</span>
-        <span class="beer-abv">4.5% ABV</span>
-        <span class="row-price">£5.50/pint · £18/case</span>
+        <span class="menu-name">Sapporo Beer</span>
+        <span class="menu-price">$45</span>
       </div>
+      <hr class="menu-divider">
 
       <div class="menu-row">
-        <span class="row-name">Golden Orchard Cider</span>
-        <span class="row-desc">Dry cider with a honeyed finish</span>
-        <span class="beer-abv">5.0% ABV</span>
-        <span class="row-price">£5.75/pint · £20/case</span>
+        <span class="menu-name">Budweiser</span>
+        <span class="menu-price">$45</span>
       </div>
+
+      <div class="menu-row premium-row">
+        <span class="menu-name">Professional Craft Beer <span class="premium-badge">PREMIUM</span><br><span class="menu-desc">Rotating selection of premium craft beers, curated by Sakura personally.</span></span>
+        <span class="menu-price premium-price">$60</span>
+      </div>
+
+    </div><!-- /tab-beers -->
+
+    <!-- ── PANEL 2: LIQUORS ── -->
+    <div class="menu-panel" id="tab-liquors">
+
+      <p class="menu-subhead">Vodka</p>
 
       <div class="menu-row">
-        <span class="row-name">Yuzu Plum Wine</span>
-        <span class="row-desc">A house-blended wine of Japanese plum and yuzu zest</span>
-        <span class="beer-abv">11.5% ABV</span>
-        <span class="row-price">£9/glass · £34/bottle</span>
+        <span class="menu-name">Nogo Vodka</span>
+        <span class="menu-price">$60</span>
       </div>
+      <hr class="menu-divider">
 
       <div class="menu-row">
-        <span class="row-name">Sakura Season Sake</span>
-        <span class="row-desc">Annual junmai release, 500 bottles numbered</span>
-        <span class="badge-limited">
-          <svg width="6" height="6" viewBox="0 0 6 6" fill="currentColor"><circle cx="3" cy="3" r="3"/></svg>
-          Limited
-        </span>
-        <span class="beer-abv">14.8% ABV</span>
-        <span class="row-price">£18/glass · £68/bottle</span>
+        <span class="menu-name">Ukiyo Rice Vodka</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Suntory Vodka</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Tenjaku Japanese Vodka</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Cherenkov Apple Vodka</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Cherenkov Plum Vodka</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Cherenkov Classic Vodka</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Cherenkov Orange Vodka</span>
+        <span class="menu-price">$60</span>
       </div>
 
-    </div><!-- /panel-cider -->
+      <p class="menu-subhead">Absinthe</p>
+
+      <div class="menu-row">
+        <span class="menu-name">Tattersall Absinthe</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Butterfly Absinthe</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Pernod Absinthe</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Tatsumi Absinthe</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Yaso Absinthe</span>
+        <span class="menu-price">$60</span>
+      </div>
+
+      <p class="menu-subhead">Brandy</p>
+
+      <div class="menu-row">
+        <span class="menu-name">Cognac Brandy</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Armagnac Brandy</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Calvados Brandy</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Suntory Brandy</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Nikka Brandy</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Shima Fukuro Tokachi Brandy</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Kobe Brandy</span>
+        <span class="menu-price">$60</span>
+      </div>
+
+      <p class="menu-subhead">Gin</p>
+
+      <div class="menu-row">
+        <span class="menu-name">Hendricks Gin</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Citadelle Gin</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Conniption Gin</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Roku Gin</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Ukiyo Blossom Gin</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Etsu Gin</span>
+        <span class="menu-price">$60</span>
+      </div>
+
+      <p class="menu-subhead">Tequila</p>
+
+      <div class="menu-row">
+        <span class="menu-name">Clase Azul Tequila</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Don Julio Tequila</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Casamigos Tequila</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Olmeca Tequila</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">1800 Tequila</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Herradura Tequila</span>
+        <span class="menu-price">$60</span>
+      </div>
+
+      <p class="menu-subhead">Whiskey</p>
+
+      <div class="menu-row">
+        <span class="menu-name">Jack Daniels Whiskey</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Suntory Toki Whiskey</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Hibiki Whiskey</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Togouchi Whiskey</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Akashi Whiskey</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Yamazaki Whiskey</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Yamazaki 12 Whiskey</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Yamazaki 25 Whiskey</span>
+        <span class="menu-price">$60</span>
+      </div>
+
+      <p class="menu-subhead">Rum</p>
+
+      <div class="menu-row">
+        <span class="menu-name">Chairmans Rum</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Bumbu Rum</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Captain Morgan Rum</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Nine Leaves Rum</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Cor Cor Rum</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Rurukakesu Rum</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Ogasawara Rum</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Kiyomi Rum</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Ryoma 7 Years Rum</span>
+        <span class="menu-price">$60</span>
+      </div>
+
+      <div class="menu-row premium-row">
+        <span class="menu-name">Professional Craft Liquor <span class="premium-badge">PREMIUM</span><br><span class="menu-desc">Premium and rare spirits, selected directly from Sakura's private collection.</span></span>
+        <span class="menu-price premium-price">$80</span>
+      </div>
+
+    </div><!-- /tab-liquors -->
+
+    <!-- ── PANEL 3: SAKE & WINE ── -->
+    <div class="menu-panel" id="tab-sake">
+
+      <p class="menu-subhead">Sake</p>
+
+      <div class="menu-row">
+        <span class="menu-name">Dassai 45 Sake</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Dewzakura Sake</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Sawanotsuru Sake</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Gekkeikan Daiginjo Sake</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Junmai 19 Sake</span>
+        <span class="menu-price">$60</span>
+      </div>
+
+      <p class="menu-subhead">Wine</p>
+
+      <div class="menu-row">
+        <span class="menu-name">Wine</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Coco Farm Wine</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Lumiere Koshu Wine</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Grande Polaire Wine</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Suntory Tomi No Oka Wine</span>
+        <span class="menu-price">$60</span>
+      </div>
+
+      <p class="menu-subhead">Champagne</p>
+
+      <div class="menu-row">
+        <span class="menu-name">Champagne</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Domanine Sogga Champagne</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Tainai Kogen Champagne</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Ajimu Merlot</span>
+        <span class="menu-price">$60</span>
+      </div>
+      <hr class="menu-divider">
+
+      <div class="menu-row">
+        <span class="menu-name">Rose Champagne</span>
+        <span class="menu-price">$60</span>
+      </div>
+
+    </div><!-- /tab-sake -->
 
     <!-- ── PANEL 4: CANNED & RTD ── -->
-    <div class="menu-panel" id="panel-canned" role="tabpanel">
+    <div class="menu-panel" id="tab-canned">
 
       <div class="menu-row">
-        <span class="row-name">Shochu Highball</span>
-        <span class="row-desc">Barley shochu, sparkling water, lemon</span>
-        <span class="beer-abv">7.0% ABV</span>
-        <span class="row-price">£4.50/can · £52/24-pack</span>
+        <span class="menu-name">Shochu Highball</span>
+        <span class="menu-price">$45</span>
       </div>
+      <hr class="menu-divider">
 
       <div class="menu-row">
-        <span class="row-name">Shiso G&amp;T</span>
-        <span class="row-desc">House gin with Japanese shiso leaf</span>
-        <span class="beer-abv">6.0% ABV</span>
-        <span class="row-price">£4.50/can · £52/24-pack</span>
+        <span class="menu-name">Shiso G&amp;T</span>
+        <span class="menu-price">$45</span>
       </div>
+      <hr class="menu-divider">
 
       <div class="menu-row">
-        <span class="row-name">Meadow Lager (can)</span>
-        <span class="row-desc">Crisp, light, and effortlessly refreshing</span>
-        <span class="beer-abv">4.2% ABV</span>
-        <span class="row-price">£3.50/can · £40/24-pack</span>
+        <span class="menu-name">Meadow Lager (can)</span>
+        <span class="menu-price">$45</span>
       </div>
+      <hr class="menu-divider">
 
       <div class="menu-row">
-        <span class="row-name">Harvest Gold (can)</span>
-        <span class="row-desc">Golden ale kissed by wildflower honey</span>
-        <span class="beer-abv">4.6% ABV</span>
-        <span class="row-price">£3.50/can · £40/24-pack</span>
+        <span class="menu-name">Harvest Gold (can)</span>
+        <span class="menu-price">$45</span>
       </div>
+      <hr class="menu-divider">
 
       <div class="menu-row">
-        <span class="row-name">Yuzu Lager (can)</span>
-        <span class="row-desc">Light lager with yuzu citrus peel</span>
-        <span class="beer-abv">4.8% ABV</span>
-        <span class="row-price">£3.75/can · £44/24-pack</span>
+        <span class="menu-name">Yuzu Lager (can)</span>
+        <span class="menu-price">$45</span>
       </div>
 
-    </div><!-- /panel-canned -->
+    </div><!-- /tab-canned -->
 
   </div><!-- /container -->
 </section>

@@ -655,6 +655,29 @@
     @media (max-width: 480px) {
       .hero-title { font-size: clamp(2.4rem, 12vw, 3.5rem); }
     }
+
+    /* ── PRODUCT SUBHEADINGS ─────────────────────────── */
+    .prod-subhead {
+      font-family: var(--sans);
+      font-size: .6rem;
+      letter-spacing: .32em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin: 2rem 0 .5rem;
+      padding-bottom: .4rem;
+      border-bottom: 1px solid rgba(201,116,138,.18);
+    }
+    .prod-subhead:first-of-type { margin-top: 1rem; }
+
+    .prod-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .65rem 0;
+      border-bottom: 1px solid rgba(245,234,208,.06);
+    }
+    .prod-label { font-size: .88rem; color: var(--cream); }
+    .prod-price { font-size: .75rem; color: var(--cream-dim); margin-left: .4rem; }
   </style>
 </head>
 <body>
@@ -703,7 +726,7 @@
     <h1 class="hero-title">
       <span class="line"><span class="line-inner">Order Direct</span></span>
     </h1>
-    <p class="hero-sub">Delivered across San Andreas. Free shipping on orders over £80.</p>
+    <p class="hero-sub">Delivered across San Andreas. Free shipping on orders over $80.</p>
   </div>
 </section>
 
@@ -755,216 +778,480 @@
           <!-- Product Selection -->
           <h3 class="products-heading">Select Products</h3>
 
-          <!-- ALES & LAGERS -->
-          <p class="product-subgroup-heading">Ales &amp; Lagers</p>
+          <!-- BEERS -->
+          <p class="prod-subhead">Beers</p>
 
-          <div class="product-row">
-            <div class="product-info">
-              <span class="product-name">Harvest Gold Ale</span>
-              <span class="product-price">£18/case</span>
-            </div>
+          <div class="prod-row">
+            <span class="prod-label">Dusche Beer <span class="prod-price">$45</span></span>
             <input type="number" class="qty-input" min="0" max="99" value="0"
-                   data-product-id="harvest-gold" data-price="18"
-                   data-name="Harvest Gold Ale" aria-label="Quantity for Harvest Gold Ale">
+                   data-name="Dusche Beer" data-price="45">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Barracho Beer <span class="prod-price">$45</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Barracho Beer" data-price="45">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Blarneys Beer <span class="prod-price">$45</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Blarneys Beer" data-price="45">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Jakeys Beer <span class="prod-price">$45</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Jakeys Beer" data-price="45">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Patrior Beer <span class="prod-price">$45</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Patrior Beer" data-price="45">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Pride Beer <span class="prod-price">$45</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Pride Beer" data-price="45">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Logger Beer <span class="prod-price">$45</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Logger Beer" data-price="45">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Pisshwasser Beer <span class="prod-price">$45</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Pisshwasser Beer" data-price="45">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Stronzo Beer <span class="prod-price">$45</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Stronzo Beer" data-price="45">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Asahi Beer <span class="prod-price">$45</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Asahi Beer" data-price="45">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Kirin Beer <span class="prod-price">$45</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Kirin Beer" data-price="45">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Sapporo Beer <span class="prod-price">$45</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Sapporo Beer" data-price="45">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Budweiser <span class="prod-price">$45</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Budweiser" data-price="45">
           </div>
 
-          <div class="product-row">
-            <div class="product-info">
-              <span class="product-name">Midnight Porter</span>
-              <span class="product-price">£22/case</span>
-            </div>
+          <!-- PROFESSIONAL CRAFT BEER -->
+          <p class="prod-subhead">Professional Craft Beer</p>
+
+          <div class="prod-row">
+            <span class="prod-label">Professional Craft Beer <span class="prod-price">$60</span></span>
             <input type="number" class="qty-input" min="0" max="99" value="0"
-                   data-product-id="midnight-porter" data-price="22"
-                   data-name="Midnight Porter" aria-label="Quantity for Midnight Porter">
+                   data-name="Professional Craft Beer" data-price="60">
           </div>
 
-          <div class="product-row">
-            <div class="product-info">
-              <span class="product-name">Meadow Lager</span>
-              <span class="product-price">£16/case</span>
-            </div>
+          <!-- VODKA -->
+          <p class="prod-subhead">Vodka</p>
+
+          <div class="prod-row">
+            <span class="prod-label">Nogo Vodka <span class="prod-price">$60</span></span>
             <input type="number" class="qty-input" min="0" max="99" value="0"
-                   data-product-id="meadow-lager" data-price="16"
-                   data-name="Meadow Lager" aria-label="Quantity for Meadow Lager">
+                   data-name="Nogo Vodka" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Ukiyo Rice Vodka <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Ukiyo Rice Vodka" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Suntory Vodka <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Suntory Vodka" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Tenjaku Japanese Vodka <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Tenjaku Japanese Vodka" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Cherenkov Apple Vodka <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Cherenkov Apple Vodka" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Cherenkov Plum Vodka <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Cherenkov Plum Vodka" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Cherenkov Classic Vodka <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Cherenkov Classic Vodka" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Cherenkov Orange Vodka <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Cherenkov Orange Vodka" data-price="60">
           </div>
 
-          <div class="product-row">
-            <div class="product-info">
-              <span class="product-name">Pale Bloom IPA</span>
-              <span class="product-price">£24/case</span>
-            </div>
+          <!-- ABSINTHE -->
+          <p class="prod-subhead">Absinthe</p>
+
+          <div class="prod-row">
+            <span class="prod-label">Tattersall Absinthe <span class="prod-price">$60</span></span>
             <input type="number" class="qty-input" min="0" max="99" value="0"
-                   data-product-id="pale-bloom-ipa" data-price="24"
-                   data-name="Pale Bloom IPA" aria-label="Quantity for Pale Bloom IPA">
+                   data-name="Tattersall Absinthe" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Butterfly Absinthe <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Butterfly Absinthe" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Pernod Absinthe <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Pernod Absinthe" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Tatsumi Absinthe <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Tatsumi Absinthe" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Yaso Absinthe <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Yaso Absinthe" data-price="60">
           </div>
 
-          <div class="product-row">
-            <div class="product-info">
-              <span class="product-name">Amber Harvest</span>
-              <span class="product-price">£20/case</span>
-            </div>
+          <!-- BRANDY -->
+          <p class="prod-subhead">Brandy</p>
+
+          <div class="prod-row">
+            <span class="prod-label">Cognac Brandy <span class="prod-price">$60</span></span>
             <input type="number" class="qty-input" min="0" max="99" value="0"
-                   data-product-id="amber-harvest" data-price="20"
-                   data-name="Amber Harvest" aria-label="Quantity for Amber Harvest">
+                   data-name="Cognac Brandy" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Armagnac Brandy <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Armagnac Brandy" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Calvados Brandy <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Calvados Brandy" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Suntory Brandy <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Suntory Brandy" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Nikka Brandy <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Nikka Brandy" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Shima Fukuro Tokachi Brandy <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Shima Fukuro Tokachi Brandy" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Kobe Brandy <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Kobe Brandy" data-price="60">
           </div>
 
-          <!-- JAPANESE RANGE -->
-          <p class="product-subgroup-heading">Japanese Range</p>
+          <!-- GIN -->
+          <p class="prod-subhead">Gin</p>
 
-          <div class="product-row">
-            <div class="product-info">
-              <span class="product-name">Sakura Sake</span>
-              <span class="product-price">£45/bottle</span>
-            </div>
+          <div class="prod-row">
+            <span class="prod-label">Hendricks Gin <span class="prod-price">$60</span></span>
             <input type="number" class="qty-input" min="0" max="99" value="0"
-                   data-product-id="sakura-sake" data-price="45"
-                   data-name="Sakura Sake" aria-label="Quantity for Sakura Sake">
+                   data-name="Hendricks Gin" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Citadelle Gin <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Citadelle Gin" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Conniption Gin <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Conniption Gin" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Roku Gin <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Roku Gin" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Ukiyo Blossom Gin <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Ukiyo Blossom Gin" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Etsu Gin <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Etsu Gin" data-price="60">
           </div>
 
-          <div class="product-row">
-            <div class="product-info">
-              <span class="product-name">Yuzu Lager</span>
-              <span class="product-price">£18/case</span>
-            </div>
+          <!-- TEQUILA -->
+          <p class="prod-subhead">Tequila</p>
+
+          <div class="prod-row">
+            <span class="prod-label">Clase Azul Tequila <span class="prod-price">$60</span></span>
             <input type="number" class="qty-input" min="0" max="99" value="0"
-                   data-product-id="yuzu-lager" data-price="18"
-                   data-name="Yuzu Lager" aria-label="Quantity for Yuzu Lager">
+                   data-name="Clase Azul Tequila" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Don Julio Tequila <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Don Julio Tequila" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Casamigos Tequila <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Casamigos Tequila" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Olmeca Tequila <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Olmeca Tequila" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">1800 Tequila <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="1800 Tequila" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Herradura Tequila <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Herradura Tequila" data-price="60">
           </div>
 
-          <div class="product-row">
-            <div class="product-info">
-              <span class="product-name">Matcha Wit</span>
-              <span class="product-price">£20/case</span>
-            </div>
+          <!-- WHISKEY -->
+          <p class="prod-subhead">Whiskey</p>
+
+          <div class="prod-row">
+            <span class="prod-label">Jack Daniels Whiskey <span class="prod-price">$60</span></span>
             <input type="number" class="qty-input" min="0" max="99" value="0"
-                   data-product-id="matcha-wit" data-price="20"
-                   data-name="Matcha Wit" aria-label="Quantity for Matcha Wit">
+                   data-name="Jack Daniels Whiskey" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Suntory Toki Whiskey <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Suntory Toki Whiskey" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Hibiki Whiskey <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Hibiki Whiskey" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Togouchi Whiskey <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Togouchi Whiskey" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Akashi Whiskey <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Akashi Whiskey" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Yamazaki Whiskey <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Yamazaki Whiskey" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Yamazaki 12 Whiskey <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Yamazaki 12 Whiskey" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Yamazaki 25 Whiskey <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Yamazaki 25 Whiskey" data-price="60">
           </div>
 
-          <div class="product-row">
-            <div class="product-info">
-              <span class="product-name">Umeshu Plum Wine</span>
-              <span class="product-price">£38/bottle</span>
-            </div>
+          <!-- RUM -->
+          <p class="prod-subhead">Rum</p>
+
+          <div class="prod-row">
+            <span class="prod-label">Chairmans Rum <span class="prod-price">$60</span></span>
             <input type="number" class="qty-input" min="0" max="99" value="0"
-                   data-product-id="umeshu-plum-wine" data-price="38"
-                   data-name="Umeshu Plum Wine" aria-label="Quantity for Umeshu Plum Wine">
+                   data-name="Chairmans Rum" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Bumbu Rum <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Bumbu Rum" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Captain Morgan Rum <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Captain Morgan Rum" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Nine Leaves Rum <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Nine Leaves Rum" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Cor Cor Rum <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Cor Cor Rum" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Rurukakesu Rum <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Rurukakesu Rum" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Ogasawara Rum <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Ogasawara Rum" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Kiyomi Rum <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Kiyomi Rum" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Ryoma 7 Years Rum <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Ryoma 7 Years Rum" data-price="60">
           </div>
 
-          <div class="product-row">
-            <div class="product-info">
-              <span class="product-name">Shochu Highball</span>
-              <span class="product-price">£52/24-pack</span>
-            </div>
+          <!-- PROFESSIONAL CRAFT LIQUOR -->
+          <p class="prod-subhead">Professional Craft Liquor</p>
+
+          <div class="prod-row">
+            <span class="prod-label">Professional Craft Liquor <span class="prod-price">$80</span></span>
             <input type="number" class="qty-input" min="0" max="99" value="0"
-                   data-product-id="shochu-highball" data-price="52"
-                   data-name="Shochu Highball" aria-label="Quantity for Shochu Highball">
+                   data-name="Professional Craft Liquor" data-price="80">
           </div>
 
-          <div class="product-row">
-            <div class="product-info">
-              <span class="product-name">Shiso Gin &amp; Tonic</span>
-              <span class="product-price">£52/24-pack</span>
-            </div>
+          <!-- SAKE -->
+          <p class="prod-subhead">Sake</p>
+
+          <div class="prod-row">
+            <span class="prod-label">Dassai 45 Sake <span class="prod-price">$60</span></span>
             <input type="number" class="qty-input" min="0" max="99" value="0"
-                   data-product-id="shiso-gt" data-price="52"
-                   data-name="Shiso Gin &amp; Tonic" aria-label="Quantity for Shiso Gin and Tonic">
+                   data-name="Dassai 45 Sake" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Dewzakura Sake <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Dewzakura Sake" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Sawanotsuru Sake <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Sawanotsuru Sake" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Gekkeikan Daiginjo Sake <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Gekkeikan Daiginjo Sake" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Junmai 19 Sake <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Junmai 19 Sake" data-price="60">
           </div>
 
-          <!-- CIDER & WINE -->
-          <p class="product-subgroup-heading">Cider &amp; Wine</p>
+          <!-- WINE -->
+          <p class="prod-subhead">Wine</p>
 
-          <div class="product-row">
-            <div class="product-info">
-              <span class="product-name">Blossom Rose Cider</span>
-              <span class="product-price">£18/case</span>
-            </div>
+          <div class="prod-row">
+            <span class="prod-label">Wine <span class="prod-price">$60</span></span>
             <input type="number" class="qty-input" min="0" max="99" value="0"
-                   data-product-id="blossom-rose-cider" data-price="18"
-                   data-name="Blossom Rose Cider" aria-label="Quantity for Blossom Rose Cider">
+                   data-name="Wine" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Coco Farm Wine <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Coco Farm Wine" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Lumiere Koshu Wine <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Lumiere Koshu Wine" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Grande Polaire Wine <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Grande Polaire Wine" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Suntory Tomi No Oka Wine <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Suntory Tomi No Oka Wine" data-price="60">
           </div>
 
-          <div class="product-row">
-            <div class="product-info">
-              <span class="product-name">Golden Orchard Cider</span>
-              <span class="product-price">£20/case</span>
-            </div>
-            <input type="number" class="qty-input" min="0" max="99" value="0"
-                   data-product-id="golden-orchard-cider" data-price="20"
-                   data-name="Golden Orchard Cider" aria-label="Quantity for Golden Orchard Cider">
-          </div>
+          <!-- CHAMPAGNE -->
+          <p class="prod-subhead">Champagne</p>
 
-          <div class="product-row">
-            <div class="product-info">
-              <span class="product-name">Yuzu Plum Wine</span>
-              <span class="product-price">£34/bottle</span>
-            </div>
+          <div class="prod-row">
+            <span class="prod-label">Champagne <span class="prod-price">$60</span></span>
             <input type="number" class="qty-input" min="0" max="99" value="0"
-                   data-product-id="yuzu-plum-wine" data-price="34"
-                   data-name="Yuzu Plum Wine" aria-label="Quantity for Yuzu Plum Wine">
+                   data-name="Champagne" data-price="60">
           </div>
-
-          <div class="product-row">
-            <div class="product-info">
-              <span class="product-name">Sakura Season Sake <span style="font-size:.72rem;color:var(--rose);letter-spacing:.08em;">(LIMITED)</span></span>
-              <span class="product-price">£68/bottle</span>
-            </div>
+          <div class="prod-row">
+            <span class="prod-label">Domanine Sogga Champagne <span class="prod-price">$60</span></span>
             <input type="number" class="qty-input" min="0" max="99" value="0"
-                   data-product-id="sakura-season-sake" data-price="68"
-                   data-name="Sakura Season Sake" aria-label="Quantity for Sakura Season Sake">
+                   data-name="Domanine Sogga Champagne" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Tainai Kogen Champagne <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Tainai Kogen Champagne" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Ajimu Merlot <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Ajimu Merlot" data-price="60">
+          </div>
+          <div class="prod-row">
+            <span class="prod-label">Rose Champagne <span class="prod-price">$60</span></span>
+            <input type="number" class="qty-input" min="0" max="99" value="0"
+                   data-name="Rose Champagne" data-price="60">
           </div>
 
           <!-- CANNED & RTD -->
-          <p class="product-subgroup-heading">Canned &amp; RTD</p>
+          <p class="prod-subhead">Canned &amp; RTD</p>
 
-          <div class="product-row">
-            <div class="product-info">
-              <span class="product-name">Meadow Lager (can)</span>
-              <span class="product-price">£40/24-pack</span>
-            </div>
+          <div class="prod-row">
+            <span class="prod-label">Shochu Highball <span class="prod-price">$45</span></span>
             <input type="number" class="qty-input" min="0" max="99" value="0"
-                   data-product-id="meadow-lager-can" data-price="40"
-                   data-name="Meadow Lager (can)" aria-label="Quantity for Meadow Lager can">
+                   data-name="Shochu Highball" data-price="45">
           </div>
-
-          <div class="product-row">
-            <div class="product-info">
-              <span class="product-name">Harvest Gold (can)</span>
-              <span class="product-price">£40/24-pack</span>
-            </div>
+          <div class="prod-row">
+            <span class="prod-label">Shiso G&amp;T <span class="prod-price">$45</span></span>
             <input type="number" class="qty-input" min="0" max="99" value="0"
-                   data-product-id="harvest-gold-can" data-price="40"
-                   data-name="Harvest Gold (can)" aria-label="Quantity for Harvest Gold can">
+                   data-name="Shiso G&T" data-price="45">
           </div>
-
-          <div class="product-row">
-            <div class="product-info">
-              <span class="product-name">Yuzu Lager (can)</span>
-              <span class="product-price">£44/24-pack</span>
-            </div>
+          <div class="prod-row">
+            <span class="prod-label">Meadow Lager (can) <span class="prod-price">$45</span></span>
             <input type="number" class="qty-input" min="0" max="99" value="0"
-                   data-product-id="yuzu-lager-can" data-price="44"
-                   data-name="Yuzu Lager (can)" aria-label="Quantity for Yuzu Lager can">
+                   data-name="Meadow Lager (can)" data-price="45">
           </div>
-
-          <div class="product-row">
-            <div class="product-info">
-              <span class="product-name">Shochu Highball (can)</span>
-              <span class="product-price">£52/24-pack</span>
-            </div>
+          <div class="prod-row">
+            <span class="prod-label">Harvest Gold (can) <span class="prod-price">$45</span></span>
             <input type="number" class="qty-input" min="0" max="99" value="0"
-                   data-product-id="shochu-highball-can" data-price="52"
-                   data-name="Shochu Highball (can)" aria-label="Quantity for Shochu Highball can">
+                   data-name="Harvest Gold (can)" data-price="45">
           </div>
-
-          <div class="product-row">
-            <div class="product-info">
-              <span class="product-name">Shiso G&amp;T (can)</span>
-              <span class="product-price">£52/24-pack</span>
-            </div>
+          <div class="prod-row">
+            <span class="prod-label">Yuzu Lager (can) <span class="prod-price">$45</span></span>
             <input type="number" class="qty-input" min="0" max="99" value="0"
-                   data-product-id="shiso-gt-can" data-price="52"
-                   data-name="Shiso G&amp;T (can)" aria-label="Quantity for Shiso G and T can">
+                   data-name="Yuzu Lager (can)" data-price="45">
           </div>
 
           <!-- Special Instructions -->
@@ -992,16 +1279,16 @@
         <div class="totals-area">
           <div class="totals-line">
             <span class="totals-label">Subtotal</span>
-            <span class="totals-value" id="summary-subtotal">£0.00</span>
+            <span class="totals-value" id="summary-subtotal">$0.00</span>
           </div>
           <div class="totals-line">
             <span class="totals-label">Shipping</span>
-            <span class="totals-value" id="summary-shipping">£8.99</span>
+            <span class="totals-value" id="summary-shipping">$8.99</span>
           </div>
           <hr class="totals-divider">
           <div class="totals-line">
             <span class="totals-total-label">Total</span>
-            <span class="totals-total-value" id="summary-total">£0.00</span>
+            <span class="totals-total-value" id="summary-total">$0.00</span>
           </div>
         </div>
       </aside>
@@ -1122,7 +1409,7 @@
   const summaryTotal    = document.getElementById('summary-total');
 
   function formatGBP(n) {
-    return '£' + n.toFixed(2);
+    return '$' + n.toFixed(2);
   }
 
   function updateSummary() {

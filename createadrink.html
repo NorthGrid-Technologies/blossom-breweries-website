@@ -486,11 +486,17 @@
       min-height: 1.8rem;
     }
     .qty-hint {
+      display: block;
+      width: 100%;
+      background: rgba(201,116,138,.15);
+      border: 2px solid #c9748a;
+      border-radius: 6px;
+      padding: 12px 16px;
       font-family: var(--sans);
-      font-size: .72rem;
-      color: rgba(245,234,208,.45);
-      letter-spacing: .04em;
-      margin-top: .4rem;
+      font-size: .95rem;
+      font-weight: 700;
+      color: #f5ead0;
+      margin-top: 16px;
     }
 
     /* ── RIGHT PANEL ───────────────────────────────────── */
@@ -831,7 +837,7 @@
               <input type="number" id="liquor-qty" class="qty-spin" min="0" max="1000" step="20" value="0">
             </div>
             <p id="order-total" class="order-total" aria-live="polite"></p>
-            <p class="qty-hint">Quantities in multiples of 20</p>
+            <p class="qty-hint">⚠️ All quantities must be in multiples of 20 (e.g. 20, 40, 60...)</p>
           </div>
 
           <p id="form-error">Something went wrong. Please try again.</p>
@@ -1127,18 +1133,17 @@
     const t = b * 100 + l * 200;
     orderTotal.textContent = t > 0 ? `Estimated Total: $${t.toFixed(2)}` : 'Select quantities above';
   }
-  function snapTo20(v) { return Math.round(v / 20) * 20; }
-
-  function roundQty(input) {
-    let v = parseInt(input.value, 10) || 0;
-    v = Math.max(0, Math.min(1000, snapTo20(v)));
-    input.value = v;
+  function roundToMultiple(input) {
+    let val = parseInt(input.value);
+    if (isNaN(val) || val <= 0) { input.value = 0; return; }
+    if (val > 1000)             { input.value = 1000; return; }
+    input.value = Math.ceil(val / 20) * 20;
   }
 
   beersInput.addEventListener('input', updateTotal);
   liquorInput.addEventListener('input', updateTotal);
-  beersInput.addEventListener('blur', () => { roundQty(beersInput); updateTotal(); });
-  liquorInput.addEventListener('blur', () => { roundQty(liquorInput); updateTotal(); });
+  beersInput.addEventListener('blur', () => { roundToMultiple(beersInput); updateTotal(); });
+  liquorInput.addEventListener('blur', () => { roundToMultiple(liquorInput); updateTotal(); });
   updateTotal();
 
   confirmClose.addEventListener('click', () => {

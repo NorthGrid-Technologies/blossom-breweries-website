@@ -711,11 +711,17 @@
       letter-spacing: .04em;
     }
     .qty-hint {
+      display: block;
+      width: 100%;
+      background: rgba(201,116,138,.15);
+      border: 2px solid #c9748a;
+      border-radius: 6px;
+      padding: 12px 16px;
       font-family: var(--sans);
-      font-size: .72rem;
-      color: rgba(245,234,208,.45);
-      letter-spacing: .04em;
-      margin: -.4rem 0 1rem;
+      font-size: .95rem;
+      font-weight: 700;
+      color: #f5ead0;
+      margin-top: 16px;
     }
   </style>
 </head>
@@ -814,7 +820,7 @@
 
           <!-- Product Selection -->
           <h3 class="products-heading">Select Products</h3>
-          <p class="qty-hint">Quantities in multiples of 20</p>
+          <p class="qty-hint">⚠️ All quantities must be in multiples of 20 (e.g. 20, 40, 60...)</p>
 
           <!-- CRAFT SELECTION -->
           <p class="prod-subhead">Craft Selection</p>
@@ -1509,7 +1515,12 @@
   }
 
   // Wire quantity inputs
-  function snapTo20(v) { return Math.round(v / 20) * 20; }
+  function roundToMultiple(input) {
+    let val = parseInt(input.value);
+    if (isNaN(val) || val <= 0) { input.value = 0; return; }
+    if (val > 1000)             { input.value = 1000; return; }
+    input.value = Math.ceil(val / 20) * 20;
+  }
 
   document.querySelectorAll('.qty-input').forEach(input => {
     input.addEventListener('input', () => {
@@ -1519,9 +1530,7 @@
       updateSummary();
     });
     input.addEventListener('blur', () => {
-      let v = parseInt(input.value, 10) || 0;
-      v = Math.max(0, Math.min(1000, snapTo20(v)));
-      input.value = v;
+      roundToMultiple(input);
       updateSummary();
     });
   });

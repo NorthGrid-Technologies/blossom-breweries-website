@@ -115,6 +115,7 @@ function buildDrinkBriefFields(brief) {
   return [
     { name: '👤 Name',            value: String(brief.name || 'Unknown'),          inline: true  },
     { name: '💬 Discord',          value: String(brief.discordUsername || ''),     inline: true  },
+    { name: '📞 Phone',            value: String(brief.phoneNumber || 'Not provided'), inline: true  },
     { name: '🥃 Base Spirit',     value: String(brief.baseSpirit || 'Not specified'), inline: false },
     { name: '🌸 Flavour Profile', value: flavours || 'None',                        inline: false },
     { name: '✨ Inspiration',     value: String(brief.inspiration || 'Not specified'), inline: false },

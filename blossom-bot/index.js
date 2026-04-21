@@ -412,8 +412,9 @@ function startHttpServer() {
     res.end('Not found');
   });
 
-  server.listen(3000, () => {
-    log('HTTP server listening on :3000');
+  const PORT = process.env.PORT || 8080;
+  server.listen(PORT, '0.0.0.0', () => {
+    log(`🌐 HTTP server listening on port ${PORT}`);
   });
 }
 

@@ -485,6 +485,13 @@
       margin-top: .8rem;
       min-height: 1.8rem;
     }
+    .qty-hint {
+      font-family: var(--sans);
+      font-size: .72rem;
+      color: rgba(245,234,208,.45);
+      letter-spacing: .04em;
+      margin-top: .4rem;
+    }
 
     /* ── RIGHT PANEL ───────────────────────────────────── */
     .brief-panel {
@@ -760,6 +767,11 @@
           </div>
 
           <div class="field-wrap">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" placeholder="+1 555 000 0000" required>
+          </div>
+
+          <div class="field-wrap">
             <label for="base-spirit">Base Spirit</label>
             <select id="base-spirit" name="base-spirit" required>
               <option value="" disabled selected>Choose a foundation</option>
@@ -809,16 +821,17 @@
                 <span>Beers &amp; Beverages</span>
                 <span class="order-sublabel">$100 per</span>
               </div>
-              <input type="number" id="beers-qty" class="qty-spin" min="0" max="999" value="0">
+              <input type="number" id="beers-qty" class="qty-spin" min="0" max="1000" step="20" value="0">
             </div>
             <div class="order-row">
               <div class="order-label">
                 <span>Liquor</span>
                 <span class="order-sublabel">$200 per</span>
               </div>
-              <input type="number" id="liquor-qty" class="qty-spin" min="0" max="999" value="0">
+              <input type="number" id="liquor-qty" class="qty-spin" min="0" max="1000" step="20" value="0">
             </div>
             <p id="order-total" class="order-total" aria-live="polite"></p>
+            <p class="qty-hint">Quantities in multiples of 20</p>
           </div>
 
           <p id="form-error">Something went wrong. Please try again.</p>
@@ -916,7 +929,7 @@
 <div id="confirm-overlay" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
   <img src="Blossomlogo.png" alt="Blossom Breweries">
   <h2 id="confirm-title"></h2>
-  <p>Sakura will be in touch on Discord.</p>
+  <p>Sakura will be in touch via text.</p>
   <button id="confirm-close">Dismiss</button>
 </div>
 
@@ -1018,10 +1031,12 @@
 
     const nameEl    = document.getElementById('name');
     const discordEl = document.getElementById('discord');
+    const phoneEl   = document.getElementById('phone');
     const spiritEl  = document.getElementById('base-spirit');
 
     const name       = nameEl.value.trim();
     const discord    = discordEl.value.trim();
+    const phone      = phoneEl.value.trim();
     const spirit     = spiritEl.value;
     const inspiration = document.getElementById('inspiration').value.trim();
     const occasion    = document.getElementById('occasion').value.trim();
@@ -1035,10 +1050,11 @@
 
     // Validate
     let valid = true;
-    [nameEl, discordEl, spiritEl].forEach(el => el.classList.remove('error'));
+    [nameEl, discordEl, phoneEl, spiritEl].forEach(el => el.classList.remove('error'));
 
     if (!name)    { nameEl.classList.add('error'); valid = false; }
     if (!discord) { discordEl.classList.add('error'); valid = false; }
+    if (!phone)   { phoneEl.classList.add('error');   valid = false; }
     if (!spirit)  { spiritEl.classList.add('error'); valid = false; }
     if (flavours.length < 1) {
       formError.textContent = 'Please pick at least one flavour.';
@@ -1059,6 +1075,7 @@
     const payload = {
       name,
       discordUsername: discord,
+      phoneNumber: phone,
       baseSpirit: spirit,
       flavourProfile: flavours,
       inspiration,
@@ -1093,7 +1110,7 @@
   });
 
   // Clear error on input
-  ['name','discord','base-spirit'].forEach(id => {
+  ['name','discord','phone','base-spirit'].forEach(id => {
     const el = document.getElementById(id);
     el.addEventListener('input',  () => el.classList.remove('error'));
     el.addEventListener('change', () => el.classList.remove('error'));
@@ -1110,8 +1127,18 @@
     const t = b * 100 + l * 200;
     orderTotal.textContent = t > 0 ? `Estimated Total: $${t.toFixed(2)}` : 'Select quantities above';
   }
+  function snapTo20(v) { return Math.round(v / 20) * 20; }
+
+  function roundQty(input) {
+    let v = parseInt(input.value, 10) || 0;
+    v = Math.max(0, Math.min(1000, snapTo20(v)));
+    input.value = v;
+  }
+
   beersInput.addEventListener('input', updateTotal);
   liquorInput.addEventListener('input', updateTotal);
+  beersInput.addEventListener('blur', () => { roundQty(beersInput); updateTotal(); });
+  liquorInput.addEventListener('blur', () => { roundQty(liquorInput); updateTotal(); });
   updateTotal();
 
   confirmClose.addEventListener('click', () => {

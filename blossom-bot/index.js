@@ -31,11 +31,17 @@ const client = new Client({
 const orderStore = new Map();
 
 // ── Outbound webhook clients ──────────────────────────────
+// Regular orders (#new-orders channel)
 const completedWebhook = new WebhookClient({ url: process.env.COMPLETED_ORDERS_WEBHOOK });
 const cancelledWebhook = new WebhookClient({ url: process.env.CANCELLED_ORDERS_WEBHOOK });
 
-// Channel ID resolved from NEW_ORDERS_WEBHOOK on startup
-let newOrdersChannelId = null;
+// Create-a-Drink briefs (#cad-new-orders channel)
+const cadCompletedWebhook = new WebhookClient({ url: process.env.CAD_COMPLETED_ORDERS_WEBHOOK });
+const cadCancelledWebhook = new WebhookClient({ url: process.env.CAD_CANCELLED_ORDERS_WEBHOOK });
+
+// Channel IDs resolved from webhooks on startup
+let newOrdersChannelId    = null; // #new-orders
+let cadNewOrdersChannelId = null; // #cad-new-orders
 
 // ── Logging ───────────────────────────────────────────────
 function log(msg) {
@@ -196,38 +202,53 @@ client.once('ready', async () => {
   log('🌸 Blossom Bot is online');
 
   try {
-    const info = await fetchWebhookInfo(process.env.NEW_ORDERS_WEBHOOK);
-    newOrdersChannelId = info.channel_id;
+    // ── Resolve #new-orders channel and restore pending orders ──
+    const ordersInfo = await fetchWebhookInfo(process.env.NEW_ORDERS_WEBHOOK);
+    newOrdersChannelId = ordersInfo.channel_id;
     log(`New-orders channel resolved: ${newOrdersChannelId}`);
 
-    // Restore pending orders/briefs from the last 50 channel messages
-    const channel  = await client.channels.fetch(newOrdersChannelId);
-    const messages = await channel.messages.fetch({ limit: 50 });
+    const ordersChannel  = await client.channels.fetch(newOrdersChannelId);
+    const ordersMessages = await ordersChannel.messages.fetch({ limit: 50 });
     let restored = 0;
 
-    messages.forEach(msg => {
+    ordersMessages.forEach(msg => {
       if (msg.author.id !== client.user.id || msg.embeds.length === 0) return;
       const embed = msg.embeds[0];
       const title = embed.title || '';
-
-      if (title.startsWith('🍹')) {
-        orderStore.set(msg.id, {
-          type: 'drink-brief',
-          data: reconstructDrinkBriefFromEmbed(embed),
-        });
-        restored++;
-      } else if (title.startsWith('🍺')) {
-        orderStore.set(msg.id, {
-          type: 'order',
-          data: reconstructFromEmbed(embed),
-        });
+      if (title.startsWith('🍺')) {
+        orderStore.set(msg.id, { type: 'order', data: reconstructFromEmbed(embed) });
         restored++;
       }
     });
 
-    log(`Restored ${restored} pending item(s) from channel history`);
+    log(`Restored ${restored} pending order(s) from #new-orders`);
   } catch (err) {
-    log(`ERROR during startup restore: ${err.message}`);
+    log(`ERROR restoring #new-orders: ${err.message}`);
+  }
+
+  try {
+    // ── Resolve #cad-new-orders channel and restore pending drink briefs ──
+    const cadInfo = await fetchWebhookInfo(process.env.CAD_NEW_ORDERS_WEBHOOK);
+    cadNewOrdersChannelId = cadInfo.channel_id;
+    log(`CAD new-orders channel resolved: ${cadNewOrdersChannelId}`);
+
+    const cadChannel  = await client.channels.fetch(cadNewOrdersChannelId);
+    const cadMessages = await cadChannel.messages.fetch({ limit: 50 });
+    let cadRestored = 0;
+
+    cadMessages.forEach(msg => {
+      if (msg.author.id !== client.user.id || msg.embeds.length === 0) return;
+      const embed = msg.embeds[0];
+      const title = embed.title || '';
+      if (title.startsWith('🍹')) {
+        orderStore.set(msg.id, { type: 'drink-brief', data: reconstructDrinkBriefFromEmbed(embed) });
+        cadRestored++;
+      }
+    });
+
+    log(`Restored ${cadRestored} pending drink brief(s) from #cad-new-orders`);
+  } catch (err) {
+    log(`ERROR restoring #cad-new-orders: ${err.message}`);
   }
 
   startHttpServer();
@@ -277,7 +298,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
         const embed = buildDrinkBriefEmbed('✅ Drink Brief Approved', 0x57F287, data, {
           name: 'Handled By', value: username, inline: false,
         });
-        await completedWebhook.send({ embeds: [embed] });
+        await cadCompletedWebhook.send({ embeds: [embed] });
         log(`Drink brief ${messageId} APPROVED by ${username}`);
 
       // ── Decline ───────────────────────────────────────────
@@ -285,7 +306,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
         const embed = buildDrinkBriefEmbed('❌ Drink Brief Declined', 0xED4245, data, {
           name: 'Handled By', value: username, inline: false,
         });
-        await cancelledWebhook.send({ embeds: [embed] });
+        await cadCancelledWebhook.send({ embeds: [embed] });
         log(`Drink brief ${messageId} DECLINED by ${username}`);
       }
     }
@@ -356,12 +377,12 @@ function startHttpServer() {
 
     if (req.method === 'POST' && req.url === '/new-drink') {
       try {
-        if (!newOrdersChannelId) {
-          throw new Error('Bot not fully ready — channel ID not yet resolved');
+        if (!cadNewOrdersChannelId) {
+          throw new Error('Bot not fully ready — CAD channel ID not yet resolved');
         }
 
         const brief   = await readBody(req);
-        const channel = await client.channels.fetch(newOrdersChannelId);
+        const channel = await client.channels.fetch(cadNewOrdersChannelId);
         const embed   = buildDrinkBriefEmbed('🍹 New Drink Creation Brief', 0xCB6F87, brief);
 
         // TODO: Add Discord ping here — replace DISCORD_USER_ID with your actual ID

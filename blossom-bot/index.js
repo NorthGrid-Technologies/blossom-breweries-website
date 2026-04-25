@@ -30,6 +30,10 @@ const client = new Client({
 // type: 'order' | 'drink-brief'
 const orderStore = new Map();
 
+// Temporary store for orders awaiting Fleeca payment confirmation
+// keyed by payment_id
+const pendingOrders = new Map();
+
 // ── Outbound webhook clients ──────────────────────────────
 // Regular orders (#new-orders channel)
 const completedWebhook = new WebhookClient({ url: process.env.COMPLETED_ORDERS_WEBHOOK });
@@ -47,6 +51,11 @@ let cadNewOrdersChannelId = null; // #cad-new-orders
 function log(msg) {
   console.log(`[${new Date().toISOString()}] ${msg}`);
 }
+
+// ── Env var validation ────────────────────────────────────
+['FLEECA_API_KEY', 'FLEECA_MODE'].forEach(key => {
+  if (!process.env[key]) log(`WARN: ${key} is not set — Fleeca payments will fail`);
+});
 
 // ── Fetch webhook metadata via HTTPS (no external deps) ──
 function fetchWebhookInfo(webhookUrl) {
@@ -340,6 +349,148 @@ function startHttpServer() {
     if (req.method === 'OPTIONS') {
       res.writeHead(204);
       res.end();
+      return;
+    }
+
+    if (req.method === 'POST' && req.url === '/create-payment') {
+      try {
+        const order = await readBody(req);
+        const description = `Blossom Breweries Order — ${order.customerName}`.slice(0, 255);
+        const amount = Math.round(Number(order.total));
+        const mode = parseInt(process.env.FLEECA_MODE) || 0;
+
+        // Call Fleeca API
+        const fleecaRes = await new Promise((resolve, reject) => {
+          const body = JSON.stringify({ amount, mode, description });
+          const options = {
+            hostname: 'banking.gta.world',
+            path: '/api/v2/payment',
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${process.env.FLEECA_API_KEY}`,
+              'Content-Type': 'application/json',
+              'Content-Length': Buffer.byteLength(body),
+            },
+          };
+          const r = https.request(options, resp => {
+            let data = '';
+            resp.on('data', chunk => { data += chunk; });
+            resp.on('end', () => resolve({ status: resp.statusCode, body: data }));
+          });
+          r.on('error', reject);
+          r.write(body);
+          r.end();
+        });
+
+        if (fleecaRes.status !== 201) {
+          log(`ERROR: Fleeca API returned ${fleecaRes.status}: ${fleecaRes.body}`);
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: false, error: 'Payment creation failed' }));
+          return;
+        }
+
+        const fleecaData = JSON.parse(fleecaRes.body);
+        const { payment_id, payment_link } = fleecaData;
+        pendingOrders.set(payment_id, { ...order, payment_id });
+        log(`Payment created — ID: ${payment_id} — customer: ${order.customerName}`);
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, payment_link }));
+
+      } catch (err) {
+        log(`ERROR handling /create-payment: ${err.message}`);
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+      return;
+    }
+
+    if (req.method === 'POST' && req.url === '/fleeca-callback') {
+      // Read raw body for HMAC verification
+      const rawBody = await new Promise((resolve, reject) => {
+        let raw = '';
+        req.on('data', chunk => { raw += chunk.toString(); });
+        req.on('end', () => resolve(raw));
+        req.on('error', reject);
+      });
+
+      // Verify HMAC-SHA256 signature
+      const crypto = require('crypto');
+      const signature = req.headers['x-fleeca-signature'] || '';
+      const expected = 'sha256=' + crypto
+        .createHmac('sha256', process.env.FLEECA_API_KEY)
+        .update(rawBody)
+        .digest('hex');
+
+      if (signature !== expected) {
+        log(`WARN: Invalid Fleeca signature — possible spoofed callback`);
+        res.writeHead(403);
+        res.end('Invalid signature');
+        return;
+      }
+
+      // Always respond 200 to Fleeca immediately
+      res.writeHead(200);
+      res.end('OK');
+
+      try {
+        const payload = JSON.parse(rawBody);
+        const { status, payment_id, payer_routing } = payload;
+        log(`Fleeca callback — status: ${status} — payment_id: ${payment_id}`);
+
+        if (status === 'payment_successful') {
+          const order = pendingOrders.get(payment_id);
+          if (!order) { log(`WARN: No pending order found for payment_id ${payment_id}`); return; }
+
+          if (!newOrdersChannelId) { log('WARN: newOrdersChannelId not resolved yet'); return; }
+          const channel = await client.channels.fetch(newOrdersChannelId);
+
+          const embed = new EmbedBuilder()
+            .setTitle('💰 PAID Order — Blossom Breweries')
+            .setColor(0x57F287)
+            .addFields(
+              ...buildEmbedFields(order),
+              { name: '🆔 Payment ID',    value: String(payment_id),      inline: true },
+              { name: '🏦 Payer Routing', value: String(payer_routing || 'N/A'), inline: true },
+            )
+            .setFooter({ text: 'Payment verified via Fleeca' })
+            .setTimestamp();
+
+          const message = await channel.send({ embeds: [embed] });
+          await message.react('✅');
+          await message.react('❌');
+
+          orderStore.set(message.id, { type: 'order', data: order });
+          pendingOrders.delete(payment_id);
+          log(`PAID order posted — message: ${message.id} — payment_id: ${payment_id}`);
+
+        } else if (status === 'payment_failed') {
+          const order = pendingOrders.get(payment_id) || {};
+          log(`Payment FAILED — payment_id: ${payment_id} — customer: ${order.customerName || 'unknown'}`);
+
+          if (newOrdersChannelId) {
+            const channel = await client.channels.fetch(newOrdersChannelId);
+            const embed = new EmbedBuilder()
+              .setTitle(`❌ Payment Failed — ${order.customerName || 'Unknown'}`)
+              .setColor(0xED4245)
+              .addFields(
+                { name: '🆔 Payment ID', value: String(payment_id), inline: true },
+                { name: '📛 Reason',     value: String(payload.reason || 'Not provided'), inline: true },
+              )
+              .setFooter({ text: 'Blossom Breweries · Fleeca Payment' })
+              .setTimestamp();
+            await channel.send({ embeds: [embed] });
+          }
+          pendingOrders.delete(payment_id);
+
+        } else if (status === 'pending') {
+          log(`Fleeca callback: payment ${payment_id} still pending — no action`);
+        } else {
+          log(`Fleeca callback: unknown status "${status}" for payment_id ${payment_id}`);
+        }
+      } catch (err) {
+        log(`ERROR processing Fleeca callback: ${err.message}`);
+      }
       return;
     }
 

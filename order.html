@@ -503,63 +503,6 @@
       font-weight: 700;
     }
 
-    /* ── CONFIRMATION OVERLAY ──────────────────────────── */
-    #confirm-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 2000;
-      background: rgba(10,6,2,0.97);
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 2rem;
-    }
-    #confirm-overlay.visible { display: flex; }
-
-    #confirm-overlay img {
-      max-height: 100px;
-      width: auto;
-      margin-bottom: 2rem;
-    }
-    #confirm-overlay h2 {
-      font-family: var(--serif);
-      font-size: clamp(1.8rem, 4vw, 2.5rem);
-      font-weight: 700;
-      color: var(--cream);
-      margin-bottom: 1rem;
-    }
-    #confirm-overlay p {
-      font-family: var(--sans);
-      font-size: 1rem;
-      color: var(--cream-dim);
-      margin-bottom: .5rem;
-    }
-    #confirm-overlay .sub {
-      font-size: .85rem;
-      color: var(--cream-dim);
-      margin-bottom: 2.5rem;
-    }
-    #confirm-close {
-      background: var(--rose);
-      color: var(--bg);
-      font-family: var(--sans);
-      font-size: .8rem;
-      font-weight: 500;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      padding: 1rem 2.8rem;
-      border-radius: 100px;
-      border: none;
-      cursor: pointer;
-      transition: background .3s, transform .3s;
-    }
-    #confirm-close:hover {
-      background: var(--rose-light);
-      transform: translateY(-2px);
-    }
-
     /* ── FOOTER ────────────────────────────────────────── */
     footer {
       background: #0c0906;
@@ -723,6 +666,39 @@
       color: #f5ead0;
       margin-top: 16px;
     }
+
+    /* ── ACCORDION ───────────────────────────────────────── */
+    .acc-item { margin-bottom: .4rem; }
+    .acc-header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(201,116,138,.1);
+      border: none;
+      border-left: 3px solid #c9748a;
+      padding: 14px 20px;
+      font-family: var(--serif);
+      font-size: .95rem;
+      color: var(--cream);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      cursor: pointer;
+      text-align: left;
+      transition: background .2s;
+    }
+    .acc-header:hover { background: rgba(201,116,138,.18); }
+    .acc-icon { font-size: 1.2rem; line-height: 1; flex-shrink: 0; }
+    .acc-body {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height .35s ease;
+    }
+    .acc-body.open { max-height: 6000px; }
+
+    /* ── PAY SPINNER ─────────────────────────────────────── */
+    .pay-spinner { width: 28px; height: 28px; border: 3px solid rgba(201,116,138,.25); border-top-color: #c9748a; border-radius: 50%; animation: spin .7s linear infinite; margin: 12px auto 0; }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
@@ -822,482 +798,560 @@
           <h3 class="products-heading">Select Products</h3>
           <p class="qty-hint">⚠️ All quantities must be in multiples of 20 (e.g. 20, 40, 60...)</p>
 
-          <!-- CRAFT SELECTION -->
-          <p class="prod-subhead">Craft Selection</p>
-          <p class="prod-subtitle">Blossom's signature tier.</p>
-
-          <div class="prod-row premium-row">
-            <span class="prod-label">Professional Craft Beer <span class="premium-badge">Premium</span> <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Professional Craft Beer" data-price="60">
-          </div>
-          <div class="prod-row premium-row">
-            <span class="prod-label">Professional Craft Liquor <span class="premium-badge">Premium</span> <span class="prod-price">$80</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Professional Craft Liquor" data-price="80">
+          <!-- CRAFT SELECTION (open by default) -->
+          <div class="acc-item">
+            <button class="acc-header" aria-expanded="true">
+              <span class="acc-title">Craft Selection</span>
+              <span class="acc-icon">−</span>
+            </button>
+            <div class="acc-body open">
+              <p class="prod-subtitle">Blossom's signature tier.</p>
+              <div class="prod-row premium-row">
+                <span class="prod-label">Professional Craft Beer <span class="premium-badge">Premium</span> <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Professional Craft Beer" data-price="60">
+              </div>
+              <div class="prod-row premium-row">
+                <span class="prod-label">Professional Craft Liquor <span class="premium-badge">Premium</span> <span class="prod-price">$80</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Professional Craft Liquor" data-price="80">
+              </div>
+            </div>
           </div>
 
           <!-- BEERS -->
-          <p class="prod-subhead">Beers</p>
-
-          <div class="prod-row">
-            <span class="prod-label">Dusche Beer <span class="prod-price">$45</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Dusche Beer" data-price="45">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Barracho Beer <span class="prod-price">$45</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Barracho Beer" data-price="45">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Blarneys Beer <span class="prod-price">$45</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Blarneys Beer" data-price="45">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Jakeys Beer <span class="prod-price">$45</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Jakeys Beer" data-price="45">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Patrior Beer <span class="prod-price">$45</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Patrior Beer" data-price="45">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Pride Beer <span class="prod-price">$45</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Pride Beer" data-price="45">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Logger Beer <span class="prod-price">$45</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Logger Beer" data-price="45">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Pisshwasser Beer <span class="prod-price">$45</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Pisshwasser Beer" data-price="45">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Stronzo Beer <span class="prod-price">$45</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Stronzo Beer" data-price="45">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Asahi Beer <span class="prod-price">$45</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Asahi Beer" data-price="45">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Kirin Beer <span class="prod-price">$45</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Kirin Beer" data-price="45">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Sapporo Beer <span class="prod-price">$45</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Sapporo Beer" data-price="45">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Budweiser <span class="prod-price">$45</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Budweiser" data-price="45">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Corona <span class="prod-price">$45</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Corona" data-price="45">
+          <div class="acc-item">
+            <button class="acc-header" aria-expanded="false">
+              <span class="acc-title">Beers</span>
+              <span class="acc-icon">+</span>
+            </button>
+            <div class="acc-body">
+              <div class="prod-row">
+                <span class="prod-label">Dusche Beer <span class="prod-price">$45</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Dusche Beer" data-price="45">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Barracho Beer <span class="prod-price">$45</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Barracho Beer" data-price="45">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Blarneys Beer <span class="prod-price">$45</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Blarneys Beer" data-price="45">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Jakeys Beer <span class="prod-price">$45</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Jakeys Beer" data-price="45">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Patrior Beer <span class="prod-price">$45</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Patrior Beer" data-price="45">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Pride Beer <span class="prod-price">$45</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Pride Beer" data-price="45">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Logger Beer <span class="prod-price">$45</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Logger Beer" data-price="45">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Pisshwasser Beer <span class="prod-price">$45</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Pisshwasser Beer" data-price="45">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Stronzo Beer <span class="prod-price">$45</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Stronzo Beer" data-price="45">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Asahi Beer <span class="prod-price">$45</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Asahi Beer" data-price="45">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Kirin Beer <span class="prod-price">$45</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Kirin Beer" data-price="45">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Sapporo Beer <span class="prod-price">$45</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Sapporo Beer" data-price="45">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Budweiser <span class="prod-price">$45</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Budweiser" data-price="45">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Corona <span class="prod-price">$45</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Corona" data-price="45">
+              </div>
+            </div>
           </div>
 
           <!-- VODKA -->
-          <p class="prod-subhead">Vodka</p>
-
-          <div class="prod-row">
-            <span class="prod-label">Nogo Vodka <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Nogo Vodka" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Ukiyo Rice Vodka <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Ukiyo Rice Vodka" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Suntory Vodka <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Suntory Vodka" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Tenjaku Japanese Vodka <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Tenjaku Japanese Vodka" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Cherenkov Apple Vodka <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Cherenkov Apple Vodka" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Cherenkov Plum Vodka <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Cherenkov Plum Vodka" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Cherenkov Classic Vodka <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Cherenkov Classic Vodka" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Cherenkov Orange Vodka <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Cherenkov Orange Vodka" data-price="60">
+          <div class="acc-item">
+            <button class="acc-header" aria-expanded="false">
+              <span class="acc-title">Vodka</span>
+              <span class="acc-icon">+</span>
+            </button>
+            <div class="acc-body">
+              <div class="prod-row">
+                <span class="prod-label">Nogo Vodka <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Nogo Vodka" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Ukiyo Rice Vodka <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Ukiyo Rice Vodka" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Suntory Vodka <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Suntory Vodka" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Tenjaku Japanese Vodka <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Tenjaku Japanese Vodka" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Cherenkov Apple Vodka <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Cherenkov Apple Vodka" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Cherenkov Plum Vodka <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Cherenkov Plum Vodka" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Cherenkov Classic Vodka <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Cherenkov Classic Vodka" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Cherenkov Orange Vodka <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Cherenkov Orange Vodka" data-price="60">
+              </div>
+            </div>
           </div>
 
           <!-- ABSINTHE -->
-          <p class="prod-subhead">Absinthe</p>
-
-          <div class="prod-row">
-            <span class="prod-label">Tattersall Absinthe <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Tattersall Absinthe" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Butterfly Absinthe <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Butterfly Absinthe" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Pernod Absinthe <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Pernod Absinthe" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Tatsumi Absinthe <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Tatsumi Absinthe" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Yaso Absinthe <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Yaso Absinthe" data-price="60">
+          <div class="acc-item">
+            <button class="acc-header" aria-expanded="false">
+              <span class="acc-title">Absinthe</span>
+              <span class="acc-icon">+</span>
+            </button>
+            <div class="acc-body">
+              <div class="prod-row">
+                <span class="prod-label">Tattersall Absinthe <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Tattersall Absinthe" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Butterfly Absinthe <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Butterfly Absinthe" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Pernod Absinthe <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Pernod Absinthe" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Tatsumi Absinthe <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Tatsumi Absinthe" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Yaso Absinthe <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Yaso Absinthe" data-price="60">
+              </div>
+            </div>
           </div>
 
           <!-- BRANDY -->
-          <p class="prod-subhead">Brandy</p>
-
-          <div class="prod-row">
-            <span class="prod-label">Cognac Brandy <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Cognac Brandy" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Armagnac Brandy <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Armagnac Brandy" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Calvados Brandy <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Calvados Brandy" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Suntory Brandy <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Suntory Brandy" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Nikka Brandy <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Nikka Brandy" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Shima Fukuro Tokachi Brandy <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Shima Fukuro Tokachi Brandy" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Kobe Brandy <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Kobe Brandy" data-price="60">
+          <div class="acc-item">
+            <button class="acc-header" aria-expanded="false">
+              <span class="acc-title">Brandy</span>
+              <span class="acc-icon">+</span>
+            </button>
+            <div class="acc-body">
+              <div class="prod-row">
+                <span class="prod-label">Cognac Brandy <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Cognac Brandy" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Armagnac Brandy <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Armagnac Brandy" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Calvados Brandy <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Calvados Brandy" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Suntory Brandy <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Suntory Brandy" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Nikka Brandy <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Nikka Brandy" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Shima Fukuro Tokachi Brandy <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Shima Fukuro Tokachi Brandy" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Kobe Brandy <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Kobe Brandy" data-price="60">
+              </div>
+            </div>
           </div>
 
           <!-- GIN -->
-          <p class="prod-subhead">Gin</p>
-
-          <div class="prod-row">
-            <span class="prod-label">Hendricks Gin <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Hendricks Gin" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Citadelle Gin <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Citadelle Gin" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Conniption Gin <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Conniption Gin" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Roku Gin <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Roku Gin" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Ukiyo Blossom Gin <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Ukiyo Blossom Gin" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Etsu Gin <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Etsu Gin" data-price="60">
+          <div class="acc-item">
+            <button class="acc-header" aria-expanded="false">
+              <span class="acc-title">Gin</span>
+              <span class="acc-icon">+</span>
+            </button>
+            <div class="acc-body">
+              <div class="prod-row">
+                <span class="prod-label">Hendricks Gin <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Hendricks Gin" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Citadelle Gin <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Citadelle Gin" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Conniption Gin <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Conniption Gin" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Roku Gin <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Roku Gin" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Ukiyo Blossom Gin <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Ukiyo Blossom Gin" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Etsu Gin <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Etsu Gin" data-price="60">
+              </div>
+            </div>
           </div>
 
           <!-- TEQUILA -->
-          <p class="prod-subhead">Tequila</p>
-
-          <div class="prod-row">
-            <span class="prod-label">Clase Azul Tequila <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Clase Azul Tequila" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Don Julio Tequila <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Don Julio Tequila" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Casamigos Tequila <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Casamigos Tequila" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Olmeca Tequila <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Olmeca Tequila" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">1800 Tequila <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="1800 Tequila" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Herradura Tequila <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Herradura Tequila" data-price="60">
+          <div class="acc-item">
+            <button class="acc-header" aria-expanded="false">
+              <span class="acc-title">Tequila</span>
+              <span class="acc-icon">+</span>
+            </button>
+            <div class="acc-body">
+              <div class="prod-row">
+                <span class="prod-label">Clase Azul Tequila <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Clase Azul Tequila" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Don Julio Tequila <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Don Julio Tequila" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Casamigos Tequila <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Casamigos Tequila" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Olmeca Tequila <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Olmeca Tequila" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">1800 Tequila <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="1800 Tequila" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Herradura Tequila <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Herradura Tequila" data-price="60">
+              </div>
+            </div>
           </div>
 
           <!-- WHISKEY -->
-          <p class="prod-subhead">Whiskey</p>
-
-          <div class="prod-row">
-            <span class="prod-label">Jack Daniels Whiskey <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Jack Daniels Whiskey" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Suntory Toki Whiskey <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Suntory Toki Whiskey" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Hibiki Whiskey <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Hibiki Whiskey" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Togouchi Whiskey <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Togouchi Whiskey" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Akashi Whiskey <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Akashi Whiskey" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Yamazaki Whiskey <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Yamazaki Whiskey" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Yamazaki 12 Whiskey <span class="prod-price">$120</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Yamazaki 12 Whiskey" data-price="120">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Yamazaki 25 Whiskey <span class="prod-price">$180</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Yamazaki 25 Whiskey" data-price="180">
+          <div class="acc-item">
+            <button class="acc-header" aria-expanded="false">
+              <span class="acc-title">Whiskey</span>
+              <span class="acc-icon">+</span>
+            </button>
+            <div class="acc-body">
+              <div class="prod-row">
+                <span class="prod-label">Jack Daniels Whiskey <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Jack Daniels Whiskey" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Suntory Toki Whiskey <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Suntory Toki Whiskey" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Hibiki Whiskey <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Hibiki Whiskey" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Togouchi Whiskey <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Togouchi Whiskey" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Akashi Whiskey <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Akashi Whiskey" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Yamazaki Whiskey <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Yamazaki Whiskey" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Yamazaki 12 Whiskey <span class="prod-price">$120</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Yamazaki 12 Whiskey" data-price="120">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Yamazaki 25 Whiskey <span class="prod-price">$180</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Yamazaki 25 Whiskey" data-price="180">
+              </div>
+            </div>
           </div>
 
           <!-- RUM -->
-          <p class="prod-subhead">Rum</p>
-
-          <div class="prod-row">
-            <span class="prod-label">Chairmans Rum <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Chairmans Rum" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Bumbu Rum <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Bumbu Rum" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Captain Morgan Rum <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Captain Morgan Rum" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Nine Leaves Rum <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Nine Leaves Rum" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Cor Cor Rum <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Cor Cor Rum" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Rurukakesu Rum <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Rurukakesu Rum" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Ogasawara Rum <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Ogasawara Rum" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Kiyomi Rum <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Kiyomi Rum" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Ryoma 7 Years Rum <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Ryoma 7 Years Rum" data-price="60">
+          <div class="acc-item">
+            <button class="acc-header" aria-expanded="false">
+              <span class="acc-title">Rum</span>
+              <span class="acc-icon">+</span>
+            </button>
+            <div class="acc-body">
+              <div class="prod-row">
+                <span class="prod-label">Chairmans Rum <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Chairmans Rum" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Bumbu Rum <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Bumbu Rum" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Captain Morgan Rum <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Captain Morgan Rum" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Nine Leaves Rum <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Nine Leaves Rum" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Cor Cor Rum <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Cor Cor Rum" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Rurukakesu Rum <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Rurukakesu Rum" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Ogasawara Rum <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Ogasawara Rum" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Kiyomi Rum <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Kiyomi Rum" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Ryoma 7 Years Rum <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Ryoma 7 Years Rum" data-price="60">
+              </div>
+            </div>
           </div>
 
           <!-- SAKE -->
-          <p class="prod-subhead">Sake</p>
-
-          <div class="prod-row">
-            <span class="prod-label">Dassai 45 Sake <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Dassai 45 Sake" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Dewzakura Sake <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Dewzakura Sake" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Sawanotsuru Sake <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Sawanotsuru Sake" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Gekkeikan Daiginjo Sake <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Gekkeikan Daiginjo Sake" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Junmai 19 Sake <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Junmai 19 Sake" data-price="60">
+          <div class="acc-item">
+            <button class="acc-header" aria-expanded="false">
+              <span class="acc-title">Sake</span>
+              <span class="acc-icon">+</span>
+            </button>
+            <div class="acc-body">
+              <div class="prod-row">
+                <span class="prod-label">Dassai 45 Sake <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Dassai 45 Sake" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Dewzakura Sake <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Dewzakura Sake" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Sawanotsuru Sake <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Sawanotsuru Sake" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Gekkeikan Daiginjo Sake <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Gekkeikan Daiginjo Sake" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Junmai 19 Sake <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Junmai 19 Sake" data-price="60">
+              </div>
+            </div>
           </div>
 
           <!-- WINE -->
-          <p class="prod-subhead">Wine</p>
-
-          <div class="prod-row">
-            <span class="prod-label">Wine <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Wine" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Coco Farm Wine <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Coco Farm Wine" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Lumiere Koshu Wine <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Lumiere Koshu Wine" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Grande Polaire Wine <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Grande Polaire Wine" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Suntory Tomi No Oka Wine <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Suntory Tomi No Oka Wine" data-price="60">
+          <div class="acc-item">
+            <button class="acc-header" aria-expanded="false">
+              <span class="acc-title">Wine</span>
+              <span class="acc-icon">+</span>
+            </button>
+            <div class="acc-body">
+              <div class="prod-row">
+                <span class="prod-label">Wine <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Wine" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Coco Farm Wine <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Coco Farm Wine" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Lumiere Koshu Wine <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Lumiere Koshu Wine" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Grande Polaire Wine <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Grande Polaire Wine" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Suntory Tomi No Oka Wine <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Suntory Tomi No Oka Wine" data-price="60">
+              </div>
+            </div>
           </div>
 
           <!-- CHAMPAGNE -->
-          <p class="prod-subhead">Champagne</p>
-
-          <div class="prod-row">
-            <span class="prod-label">Champagne <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Champagne" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Domanine Sogga Champagne <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Domanine Sogga Champagne" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Tainai Kogen Champagne <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Tainai Kogen Champagne" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Ajimu Merlot <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Ajimu Merlot" data-price="60">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Rose Champagne <span class="prod-price">$60</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Rose Champagne" data-price="60">
+          <div class="acc-item">
+            <button class="acc-header" aria-expanded="false">
+              <span class="acc-title">Champagne</span>
+              <span class="acc-icon">+</span>
+            </button>
+            <div class="acc-body">
+              <div class="prod-row">
+                <span class="prod-label">Champagne <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Champagne" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Domanine Sogga Champagne <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Domanine Sogga Champagne" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Tainai Kogen Champagne <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Tainai Kogen Champagne" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Ajimu Merlot <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Ajimu Merlot" data-price="60">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Rose Champagne <span class="prod-price">$60</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Rose Champagne" data-price="60">
+              </div>
+            </div>
           </div>
 
           <!-- CANNED & RTD -->
-          <p class="prod-subhead">Canned &amp; RTD</p>
-
-          <div class="prod-row">
-            <span class="prod-label">Shochu Highball <span class="prod-price">$45</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Shochu Highball" data-price="45">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Shiso G&amp;T <span class="prod-price">$45</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Shiso G&T" data-price="45">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Meadow Lager (can) <span class="prod-price">$45</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Meadow Lager (can)" data-price="45">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Harvest Gold (can) <span class="prod-price">$45</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Harvest Gold (can)" data-price="45">
-          </div>
-          <div class="prod-row">
-            <span class="prod-label">Yuzu Lager (can) <span class="prod-price">$45</span></span>
-            <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
-                   data-name="Yuzu Lager (can)" data-price="45">
+          <div class="acc-item">
+            <button class="acc-header" aria-expanded="false">
+              <span class="acc-title">Canned &amp; RTD</span>
+              <span class="acc-icon">+</span>
+            </button>
+            <div class="acc-body">
+              <div class="prod-row">
+                <span class="prod-label">Shochu Highball <span class="prod-price">$45</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Shochu Highball" data-price="45">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Shiso G&amp;T <span class="prod-price">$45</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Shiso G&T" data-price="45">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Meadow Lager (can) <span class="prod-price">$45</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Meadow Lager (can)" data-price="45">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Harvest Gold (can) <span class="prod-price">$45</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Harvest Gold (can)" data-price="45">
+              </div>
+              <div class="prod-row">
+                <span class="prod-label">Yuzu Lager (can) <span class="prod-price">$45</span></span>
+                <input type="number" class="qty-input" min="0" max="1000" step="20" value="0"
+                       data-name="Yuzu Lager (can)" data-price="45">
+              </div>
+            </div>
           </div>
 
           <!-- Special Instructions -->
@@ -1310,6 +1364,7 @@
 
           <p id="form-error">Something went wrong. Please try again.</p>
           <button type="submit" class="submit-btn">PLACE ORDER</button>
+          <div id="pay-spinner" class="pay-spinner" hidden></div>
 
         </form>
       </div><!-- /order-form-col -->
@@ -1409,17 +1464,6 @@
     </div>
   </div>
 </footer>
-
-<!-- ═══════════════════════════════════════════════════════
-     CONFIRMATION OVERLAY
-════════════════════════════════════════════════════════ -->
-<div id="confirm-overlay" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
-  <img src="Blossomlogo.png" alt="Blossom Breweries">
-  <h2 id="confirm-title">Thank you, <span id="confirm-name"></span>.</h2>
-  <p>Your order is on its way.</p>
-  <p class="sub">We'll contact you by text shortly.</p>
-  <button id="confirm-close">Back to Menu</button>
-</div>
 
 <script>
   // ── NAV SCROLL ────────────────────────────────────────
@@ -1536,10 +1580,7 @@
   });
 
   // ── FORM VALIDATION & SUBMIT ───────────────────────────
-  const form           = document.getElementById('order-form');
-  const confirmOverlay = document.getElementById('confirm-overlay');
-  const confirmName    = document.getElementById('confirm-name');
-  const confirmClose   = document.getElementById('confirm-close');
+  const form = document.getElementById('order-form');
 
   function validateField(field) {
     const wrap = field.closest('.field-wrap');
@@ -1563,9 +1604,7 @@
     });
   });
 
-  // POST orders to the local blossom-bot HTTP server.
-  // Change this URL to your VPS IP if hosting remotely, e.g. http://123.45.67.89:3000/new-order
-  const ORDER_ENDPOINT = 'https://blossom-bot.fly.dev/new-order';
+  const PAYMENT_ENDPOINT = 'https://blossom-bot.fly.dev/create-payment';
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
@@ -1599,14 +1638,14 @@
     const total    = subtotal + (subtotal === 0 ? 0 : shipping);
 
     // ── Collect customer fields ──────────────────────────
-    const fullName       = document.getElementById('full-name').value.trim();
+    const fullName        = document.getElementById('full-name').value.trim();
     const discordUsername = document.getElementById('email').value.trim();
-    const address        = document.getElementById('address').value.trim();
-    const city           = document.getElementById('city').value.trim();
-    const phoneNumber    = document.getElementById('postcode').value.trim();
-    const notes          = document.getElementById('notes').value.trim() || 'None';
+    const address         = document.getElementById('address').value.trim();
+    const city            = document.getElementById('city').value.trim();
+    const phoneNumber     = document.getElementById('postcode').value.trim();
+    const notes           = document.getElementById('notes').value.trim() || 'None';
 
-    // ── Build order payload for blossom-bot ─────────────
+    // ── Build payload ────────────────────────────────────
     const payload = {
       customerName: fullName,
       discordUsername,
@@ -1620,16 +1659,18 @@
       notes,
     };
 
-    // ── Disable button, clear previous error ────────────
+    // ── Disable button, show spinner, clear error ────────
     const submitBtn = form.querySelector('.submit-btn');
     const formError = document.getElementById('form-error');
+    const paySpinner = document.getElementById('pay-spinner');
     submitBtn.disabled    = true;
-    submitBtn.textContent = 'SENDING...';
+    submitBtn.textContent = 'PREPARING PAYMENT...';
     formError.style.display = 'none';
+    paySpinner.hidden = false;
 
     // ── Send to blossom-bot ──────────────────────────────
     try {
-      const res  = await fetch(ORDER_ENDPOINT, {
+      const res  = await fetch(PAYMENT_ENDPOINT, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify(payload),
@@ -1637,32 +1678,36 @@
       const data = await res.json();
 
       if (res.ok && data.success) {
-        confirmName.textContent = fullName.split(' ')[0];
-        confirmOverlay.classList.add('visible');
-        document.body.style.overflow = 'hidden';
+        window.location.href = data.payment_link;
       } else {
         throw new Error(data.error || `Server responded with status ${res.status}`);
       }
     } catch (err) {
+      formError.style.color = 'var(--rose)';
+      formError.textContent = 'Something went wrong. Please try again.';
       formError.style.display = 'block';
-    } finally {
       submitBtn.disabled    = false;
       submitBtn.textContent = 'PLACE ORDER';
+    } finally {
+      paySpinner.hidden = true;
     }
   });
 
-  confirmClose.addEventListener('click', () => {
-    confirmOverlay.classList.remove('visible');
-    document.body.style.overflow = '';
-
-    // Reset form
-    form.reset();
-    document.querySelectorAll('.qty-input').forEach(inp => { inp.value = 0; });
-    document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
-    updateSummary();
-
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  // ── Accordion ─────────────────────────────────────────
+  document.querySelectorAll('.acc-header').forEach(btn => {
+    const body = btn.nextElementSibling;
+    // Set initial state from aria-expanded
+    if (btn.getAttribute('aria-expanded') === 'true') {
+      body.classList.add('open');
+      btn.querySelector('.acc-icon').textContent = '−';
+    } else {
+      btn.querySelector('.acc-icon').textContent = '+';
+    }
+    btn.addEventListener('click', () => {
+      const isOpen = body.classList.toggle('open');
+      btn.setAttribute('aria-expanded', isOpen);
+      btn.querySelector('.acc-icon').textContent = isOpen ? '−' : '+';
+    });
   });
 </script>
 </body>

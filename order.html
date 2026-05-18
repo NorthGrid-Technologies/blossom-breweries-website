@@ -699,6 +699,81 @@
     /* ── PAY SPINNER ─────────────────────────────────────── */
     .pay-spinner { width: 28px; height: 28px; border: 3px solid rgba(201,116,138,.25); border-top-color: #c9748a; border-radius: 50%; animation: spin .7s linear infinite; margin: 12px auto 0; }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── PROMO CODE ──────────────────────────────────────── */
+    .promo-section { margin: 2rem 0 1.5rem; }
+    .promo-label {
+      font-family: var(--sans);
+      font-size: 0.62rem;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      font-variant: small-caps;
+      color: var(--cream);
+      display: block;
+      margin-bottom: .5rem;
+    }
+    .promo-row {
+      display: flex;
+      gap: .7rem;
+      align-items: stretch;
+    }
+    .promo-row input {
+      flex: 1;
+      background: #0f0a04;
+      border: 1px solid rgba(245,234,208,0.28);
+      border-radius: 2px;
+      color: var(--cream);
+      padding: .75rem 1rem;
+      font-family: var(--sans);
+      font-size: .9rem;
+      font-weight: 300;
+      text-transform: uppercase;
+      outline: none;
+      transition: border-color .25s, box-shadow .25s;
+    }
+    .promo-row input:focus {
+      border-color: var(--rose);
+      box-shadow: 0 0 0 3px rgba(201,116,138,.12);
+    }
+    .promo-apply-btn {
+      background: var(--rose);
+      color: var(--cream);
+      font-family: var(--sans);
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      padding: .75rem 1.4rem;
+      border: none;
+      border-radius: 2px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background .3s;
+      flex-shrink: 0;
+    }
+    .promo-apply-btn:hover:not(:disabled) { background: var(--rose-light); }
+    .promo-apply-btn:disabled { opacity: .5; cursor: not-allowed; }
+    .promo-status {
+      display: none;
+      margin-top: .5rem;
+      font-size: .8rem;
+      line-height: 1.5;
+    }
+    .promo-status.success { color: #6fcf97; display: block; }
+    .promo-status.error   { color: var(--rose); display: block; }
+    .promo-remove {
+      background: none;
+      border: none;
+      color: var(--cream-dim);
+      font-size: .72rem;
+      cursor: pointer;
+      margin-left: .6rem;
+      text-decoration: underline;
+      padding: 0;
+      transition: color .2s;
+    }
+    .promo-remove:hover { color: var(--rose); }
+    .discount-line { color: #6fcf97; }
   </style>
 </head>
 <body>
@@ -1364,6 +1439,16 @@
             <textarea id="notes" name="notes" rows="3" placeholder="Any special requests or delivery notes…"></textarea>
           </div>
 
+          <!-- Promo Code -->
+          <div class="promo-section">
+            <span class="promo-label">Promo Code</span>
+            <div class="promo-row">
+              <input type="text" id="promo-input" placeholder="Enter promo code" autocomplete="off">
+              <button type="button" id="promo-apply-btn" class="promo-apply-btn">Apply</button>
+            </div>
+            <div id="promo-status" class="promo-status"></div>
+          </div>
+
           <p id="form-error">Something went wrong. Please try again.</p>
           <button type="submit" class="submit-btn">PLACE ORDER</button>
           <div id="pay-spinner" class="pay-spinner" hidden></div>
@@ -1383,6 +1468,10 @@
           <div class="totals-line">
             <span class="totals-label">Subtotal</span>
             <span class="totals-value" id="summary-subtotal">$0.00</span>
+          </div>
+          <div class="totals-line" id="discount-line" style="display:none;">
+            <span class="totals-label discount-line" id="discount-label">Promo</span>
+            <span class="totals-value discount-line" id="summary-discount">-$0.00</span>
           </div>
           <div class="totals-line">
             <span class="totals-label">Shipping</span>
@@ -1499,6 +1588,12 @@
   const summarySubtotal = document.getElementById('summary-subtotal');
   const summaryShipping = document.getElementById('summary-shipping');
   const summaryTotal    = document.getElementById('summary-total');
+  const discountLine    = document.getElementById('discount-line');
+  const discountLabel   = document.getElementById('discount-label');
+  const summaryDiscount = document.getElementById('summary-discount');
+
+  let activeDiscount   = 0;   // percentage
+  let activePromoCode  = null; // uppercase string
 
   function formatGBP(n) {
     return '$' + n.toFixed(2);
@@ -1539,10 +1634,22 @@
       summaryList.classList.add('has-items');
     }
 
+    // Discount
+    const discountAmount = subtotal * (activeDiscount / 100);
+    const discountedSubtotal = subtotal - discountAmount;
+
+    if (activeDiscount > 0 && subtotal > 0) {
+      discountLabel.textContent = 'Promo (' + activeDiscount + '%)';
+      summaryDiscount.textContent = '-' + formatGBP(discountAmount);
+      discountLine.style.display = '';
+    } else {
+      discountLine.style.display = 'none';
+    }
+
     // Shipping
-    const isFree    = subtotal >= SHIPPING_THRESHOLD;
-    const shipping  = isFree ? 0 : (subtotal > 0 ? SHIPPING_COST : 0);
-    const total     = subtotal + shipping;
+    const isFree   = discountedSubtotal >= SHIPPING_THRESHOLD;
+    const shipping = isFree ? 0 : (subtotal > 0 ? SHIPPING_COST : 0);
+    const total    = discountedSubtotal + shipping;
 
     summarySubtotal.textContent = formatGBP(subtotal);
 
@@ -1579,6 +1686,77 @@
       roundToMultiple(input);
       updateSummary();
     });
+  });
+
+  // ── PROMO CODE ────────────────────────────────────────
+  const promoInput    = document.getElementById('promo-input');
+  const promoApplyBtn = document.getElementById('promo-apply-btn');
+  const promoStatus   = document.getElementById('promo-status');
+  const PROMO_ENDPOINT = 'https://blossom-bot.fly.dev/validate-promo';
+
+  promoInput.addEventListener('input', () => {
+    promoInput.value = promoInput.value.toUpperCase();
+  });
+
+  function showPromoStatus(msg, type) {
+    promoStatus.textContent = msg;
+    promoStatus.className = 'promo-status ' + type;
+  }
+
+  function clearPromo() {
+    activeDiscount  = 0;
+    activePromoCode = null;
+    promoInput.disabled    = false;
+    promoApplyBtn.disabled = false;
+    promoInput.value       = '';
+    promoStatus.className  = 'promo-status';
+    promoStatus.textContent = '';
+    updateSummary();
+  }
+
+  promoApplyBtn.addEventListener('click', async () => {
+    const code = promoInput.value.toUpperCase().trim();
+    if (!code) {
+      showPromoStatus('Please enter a promo code', 'error');
+      return;
+    }
+    promoApplyBtn.disabled = true;
+    promoApplyBtn.textContent = '...';
+    try {
+      const res  = await fetch(PROMO_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        activeDiscount  = data.discount;
+        activePromoCode = code;
+        promoInput.disabled    = true;
+        promoApplyBtn.disabled = true;
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'promo-remove';
+        removeBtn.textContent = '✕ Remove';
+        removeBtn.addEventListener('click', () => {
+          removeBtn.remove();
+          clearPromo();
+        });
+        promoStatus.innerHTML = '';
+        promoStatus.appendChild(document.createTextNode('✓ ' + code + ' applied — ' + data.discount + '% off your order! '));
+        promoStatus.appendChild(removeBtn);
+        promoStatus.className = 'promo-status success';
+        updateSummary();
+      } else {
+        promoApplyBtn.disabled  = false;
+        promoApplyBtn.textContent = 'Apply';
+        showPromoStatus('✗ Invalid promo code', 'error');
+      }
+    } catch (err) {
+      promoApplyBtn.disabled  = false;
+      promoApplyBtn.textContent = 'Apply';
+      showPromoStatus('✗ Could not verify promo code. Try again.', 'error');
+    }
   });
 
   // ── FORM VALIDATION & SUBMIT ───────────────────────────
@@ -1635,9 +1813,11 @@
       }
     });
 
-    const isFree   = subtotal >= SHIPPING_THRESHOLD;
+    const discountAmount     = subtotal * (activeDiscount / 100);
+    const discountedSubtotal = subtotal - discountAmount;
+    const isFree   = discountedSubtotal >= SHIPPING_THRESHOLD;
     const shipping = (subtotal === 0 || !isFree) ? SHIPPING_COST : 0;
-    const total    = subtotal + (subtotal === 0 ? 0 : shipping);
+    const total    = discountedSubtotal + (subtotal === 0 ? 0 : shipping);
 
     // ── Collect customer fields ──────────────────────────
     const fullName        = document.getElementById('full-name').value.trim();
@@ -1659,6 +1839,9 @@
       shipping,
       total,
       notes,
+      promoCode:      activePromoCode || null,
+      discountPercent: activeDiscount || 0,
+      discountAmount:  discountAmount || 0,
     };
 
     // ── Disable button, show spinner, clear error ────────

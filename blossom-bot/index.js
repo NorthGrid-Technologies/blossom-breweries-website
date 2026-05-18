@@ -1,5 +1,12 @@
 require('dotenv').config();
 
+// Required env vars: DISCORD_BOT_TOKEN, NEW_ORDERS_WEBHOOK,
+// COMPLETED_ORDERS_WEBHOOK, CANCELLED_ORDERS_WEBHOOK,
+// CAD_NEW_ORDERS_WEBHOOK, CAD_COMPLETED_ORDERS_WEBHOOK,
+// CAD_CANCELLED_ORDERS_WEBHOOK, FLEECA_API_KEY, FLEECA_MODE,
+// ADMIN_KEY
+// TODO: Add ADMIN_KEY to fly secrets and .env
+
 const {
   Client,
   GatewayIntentBits,
@@ -25,6 +32,10 @@ const client = new Client({
     Partials.User,
   ],
 });
+
+// ── Promo codes: code → { discount, createdBy, createdAt } ──
+const promoCodes = new Map();
+// Structure: promoCodes.set('CODE', { discount: 10, createdBy: 'username', createdAt: Date })
 
 // ── Order store: messageId → { type, data } ──────────────
 // type: 'order' | 'drink-brief'
@@ -102,17 +113,25 @@ function buildEmbedFields(order) {
   const shippingDisplay =
     Number(order.shipping) === 0 ? 'FREE' : `£${Number(order.shipping).toFixed(2)}`;
 
-  return [
+  const fields = [
     { name: '👤 Customer',         value: String(order.customerName),                       inline: true  },
     { name: '💬 Discord',          value: String(order.discordUsername || order.email || ''), inline: true  },
     { name: '📦 Delivery Address', value: addressValue,                                      inline: false },
     { name: '📞 Phone',            value: String(order.phoneNumber || order.postcode || ''), inline: true  },
     { name: '🛒 Order',            value: orderLines,                                        inline: false },
-    { name: '💰 Subtotal',  value: `£${Number(order.subtotal).toFixed(2)}`, inline: true },
+    { name: '💰 Subtotal',  value: `$${Number(order.subtotal).toFixed(2)}`, inline: true },
     { name: '🚚 Shipping',  value: shippingDisplay,                         inline: true },
-    { name: '✅ Total',     value: `£${Number(order.total).toFixed(2)}`,    inline: true },
-    { name: '📝 Notes',     value: String(order.notes || 'None'),           inline: false },
   ];
+
+  if (order.promoCode && order.discountAmount > 0) {
+    fields.push({ name: '🎟️ Promo Code', value: `${order.promoCode} (${order.discountPercent}% off)`, inline: true });
+    fields.push({ name: '💸 Discount',   value: `-$${Number(order.discountAmount).toFixed(2)}`,        inline: true });
+  }
+
+  fields.push({ name: '✅ Total',  value: `$${Number(order.total).toFixed(2)}`, inline: true });
+  fields.push({ name: '📝 Notes', value: String(order.notes || 'None'),         inline: false });
+
+  return fields;
 }
 
 // ── Build Discord embed fields from a drink-brief object ──
@@ -141,10 +160,10 @@ function reconstructFromEmbed(embed) {
   const f = {};
   (embed.fields || []).forEach(field => { f[field.name] = field.value; });
 
-  const shippingRaw = f['🚚 Shipping'] || '£0';
+  const shippingRaw = f['🚚 Shipping'] || '$0';
   const shipping = shippingRaw === 'FREE'
     ? 0
-    : parseFloat(shippingRaw.replace('£', '')) || 0;
+    : parseFloat(shippingRaw.replace('$', '')) || 0;
 
   return {
     customerName:    f['👤 Customer']         || 'Unknown',
@@ -154,9 +173,9 @@ function reconstructFromEmbed(embed) {
     phoneNumber:     f['📞 Phone']            || '',
     items:           [],
     _rawOrderLines:  f['🛒 Order']            || '',
-    subtotal: parseFloat((f['💰 Subtotal'] || '£0').replace('£', '')) || 0,
+    subtotal: parseFloat((f['💰 Subtotal'] || '$0').replace('$', '')) || 0,
     shipping,
-    total:    parseFloat((f['✅ Total']    || '£0').replace('£', '')) || 0,
+    total:    parseFloat((f['✅ Total']    || '$0').replace('$', '')) || 0,
     notes:    f['📝 Notes'] || 'None',
   };
 }
@@ -344,7 +363,7 @@ function startHttpServer() {
     // CORS headers so the browser page can POST locally
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
 
     if (req.method === 'OPTIONS') {
       res.writeHead(204);
@@ -352,11 +371,132 @@ function startHttpServer() {
       return;
     }
 
+    // ── Admin: Add promo code ─────────────────────────────
+    if (req.method === 'POST' && req.url === '/admin/promo/add') {
+      try {
+        const body = await readBody(req);
+        if (body.adminKey !== process.env.ADMIN_KEY) {
+          res.writeHead(401, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: false, error: 'Invalid admin key' }));
+          return;
+        }
+        const code = String(body.code || '').toUpperCase().trim();
+        const discount = Number(body.discount);
+        if (!code) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: false, error: 'Code is required' }));
+          return;
+        }
+        if (isNaN(discount) || discount < 1 || discount > 100) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: false, error: 'Discount must be between 1 and 100' }));
+          return;
+        }
+        promoCodes.set(code, { discount, createdBy: 'admin', createdAt: new Date() });
+        log(`Promo code added: ${code} (${discount}%)`);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, code, discount }));
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+      return;
+    }
+
+    // ── Admin: Remove promo code ──────────────────────────
+    if (req.method === 'POST' && req.url === '/admin/promo/remove') {
+      try {
+        const body = await readBody(req);
+        if (body.adminKey !== process.env.ADMIN_KEY) {
+          res.writeHead(401, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: false, error: 'Invalid admin key' }));
+          return;
+        }
+        const code = String(body.code || '').toUpperCase().trim();
+        if (!promoCodes.has(code)) {
+          res.writeHead(404, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: false, error: 'Code not found' }));
+          return;
+        }
+        promoCodes.delete(code);
+        log(`Promo code removed: ${code}`);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true }));
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+      return;
+    }
+
+    // ── Admin: List promo codes ───────────────────────────
+    if (req.method === 'GET' && req.url.startsWith('/admin/promo/list')) {
+      const urlParams = new URL(req.url, 'http://localhost').searchParams;
+      const adminKey  = urlParams.get('adminKey') || '';
+      if (adminKey !== process.env.ADMIN_KEY) {
+        res.writeHead(401, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: 'Invalid admin key' }));
+        return;
+      }
+      const codes = [];
+      promoCodes.forEach((val, code) => {
+        codes.push({ code, discount: val.discount, createdAt: val.createdAt });
+      });
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: true, codes }));
+      return;
+    }
+
+    // ── Public: Validate promo code ───────────────────────
+    if (req.method === 'POST' && req.url === '/validate-promo') {
+      try {
+        const body = await readBody(req);
+        const code = String(body.code || '').toUpperCase().trim();
+        const entry = promoCodes.get(code);
+        if (!entry) {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: false, error: 'Invalid promo code' }));
+          return;
+        }
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, discount: entry.discount }));
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+      return;
+    }
+
     if (req.method === 'POST' && req.url === '/create-payment') {
       try {
         const order = await readBody(req);
+
+        // Apply promo discount if valid
+        let discountAmount = 0;
+        let discountPercent = 0;
+        let appliedPromoCode = null;
+        if (order.promoCode) {
+          const promoEntry = promoCodes.get(String(order.promoCode).toUpperCase().trim());
+          if (promoEntry) {
+            discountPercent = promoEntry.discount;
+            discountAmount = (Number(order.subtotal) * discountPercent) / 100;
+            appliedPromoCode = String(order.promoCode).toUpperCase().trim();
+          }
+        }
+
+        const discountedSubtotal = Number(order.subtotal) - discountAmount;
+        const shipping = discountedSubtotal >= 80 ? 0 : (discountedSubtotal > 0 ? 8.99 : 0);
+        const finalTotal = discountedSubtotal + shipping;
+
+        // Enrich order with server-validated discount values
+        order.promoCode      = appliedPromoCode;
+        order.discountPercent = discountPercent;
+        order.discountAmount  = discountAmount;
+        order.shipping        = shipping;
+        order.total           = finalTotal;
+
         const description = `Blossom Breweries Order — ${order.customerName}`.slice(0, 255);
-        const amount = Math.round(Number(order.total));
+        const amount = Math.round(finalTotal);
         const mode = parseInt(process.env.FLEECA_MODE) || 0;
 
         // Call Fleeca API
